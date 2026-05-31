@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Thrive">
+<meta name="theme-color" content="#0d1f1a">
+<title>Thrive</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1f1a;--bg2:#122820;--card:#1e3d30;--card2:#243f33;
+  --green:#3ecf8e;--green2:#2ab57a;--green-dim:rgba(62,207,142,0.1);
+  --amber:#f4a942;--amber-dim:rgba(244,169,66,0.1);
+  --coral:#f07060;--coral-dim:rgba(240,112,96,0.1);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.1);
+  --teal:#5dcaa5;--teal-dim:rgba(93,202,165,0.1);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.1);
+  --text:#e8f5ef;--text2:#8ab49e;--text3:#4d7a62;
+  --border:rgba(62,207,142,0.1);--border2:rgba(62,207,142,0.2);
+  --serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
+  --r:14px;--rsm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);display:flex;flex-direction:column;max-width:430px;margin:0 auto;}
+.app-body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 0 20px;}
+.app-body::-webkit-scrollbar{display:none;}
+
+/* ── Bottom nav ── */
+.nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px);flex-shrink:0;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--sans);}
+.nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.nav-btn span{font-size:9px;}
+.nav-btn.active{color:var(--green);}
+
+/* ── Screens ── */
+.screen{display:none;padding:0 16px;}.screen.active{display:block;}
+
+/* ── Section label ── */
+.sec{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;}
+
+/* ── Cards ── */
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.card2{background:var(--card2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;}
+
+/* ══════════════════════════════
+   FITNESS SCREEN
+══════════════════════════════ */
+.fit-banner{border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.fit-banner.today{background:var(--green-dim);border:0.5px solid var(--border2);}
+.fit-banner.rest{background:var(--card2);border:0.5px solid var(--border);}
+.fit-banner-icon{font-size:22px;}
+.fit-banner-text .fbt{font-size:14px;font-weight:500;}
+.fit-banner-text .fbs{font-size:12px;color:var(--text2);margin-top:2px;}
+.fit-phase-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.fit-phase-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.fit-phase-title{font-family:var(--serif);font-size:20px;line-height:1.2;}
+.fit-phase-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:12px;background:var(--green-dim);color:var(--green);border:0.5px solid var(--border2);white-space:nowrap;}
+.fit-phase-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px;}
+.exercise-card{background:var(--card2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;}
+.ex-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.ex-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3;}
+.ex-sets-badge{font-size:11px;color:var(--amber);font-weight:500;background:var(--amber-dim);padding:2px 9px;border-radius:10px;white-space:nowrap;margin-left:8px;flex-shrink:0;}
+.ex-focus{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.ex-focus.glutes{color:var(--coral);}
+.ex-focus.core{color:var(--purple);}
+.ex-focus.lowback{color:var(--teal);}
+.ex-focus.compound{color:var(--green);}
+.ex-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px;}
+.ex-setup{font-size:11px;color:var(--text3);line-height:1.5;background:var(--bg2);border-radius:var(--rsm);padding:7px 10px;margin-bottom:8px;}
+.ex-sets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
+.set-box{background:var(--card);border:0.5px solid var(--border2);border-radius:var(--rsm);padding:5px 8px;cursor:pointer;min-width:52px;text-align:center;transition:all .15s;}
+.set-box.done{background:var(--green-dim);border-color:var(--green);}
+.set-box .snum{font-size:11px;font-weight:500;color:var(--text2);}
+.set-box.done .snum{color:var(--green);}
+.set-box .sreps{font-size:10px;color:var(--text3);}
+.ex-note{font-size:11px;color:var(--green);font-style:italic;margin-top:4px;line-height:1.5;}
+.ex-complete-btn{width:100%;margin-top:8px;padding:9px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:transparent;color:var(--green);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;}
+.ex-complete-btn.done{background:var(--green-dim);border-color:var(--green);}
+.workout-log-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.log-entry{padding:8px 0;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.log-entry:last-child{border-bottom:none;}
+.log-date{font-size:12px;font-weight:500;color:var(--text);}
+.log-detail{font-size:11px;color:var(--text2);margin-top:2px;}
+.log-badge{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--green-dim);color:var(--green);}
+.rest-card{background:var(--card2);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;text-align:center;}
+.rest-emoji{font-size:32px;margin-bottom:8px;}
+.rest-title{font-family:var(--serif);font-size:18px;margin-bottom:6px;}
+.rest-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.finish-workout-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--green);border:none;color:#0d1f1a;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;margin-top:4px;}
+.finish-workout-btn:active{transform:scale(.98);}
+.streak-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.fit-stat{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:11px 10px;text-align:center;}
+.fit-stat .fsn{font-family:var(--serif);font-size:26px;color:var(--green);}
+.fit-stat .fsl{font-size:10px;color:var(--text2);margin-top:2px;}
+
+/* ══════════════════════════════
+   HOME / DAILY QUOTE SCREEN
+══════════════════════════════ */
+.home-header{padding:48px 16px 16px;background:var(--bg);}
+.date-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.date-title{font-family:var(--serif);font-size:28px;line-height:1.1;}
+.date-sub{font-size:12px;color:var(--text2);margin-top:3px;}
+.day-pill{font-size:11px;font-weight:500;padding:4px 11px;border-radius:20px;background:var(--green-dim);color:var(--green);border:0.5px solid var(--border2);white-space:nowrap;margin-top:5px;}
+.day-pill.amber{background:var(--amber-dim);color:var(--amber);border-color:rgba(244,169,66,.25);}
+.day-pill.coral{background:var(--coral-dim);color:var(--coral);border-color:rgba(240,112,96,.25);}
+
+/* Quote card */
+.quote-card{background:var(--card);border:0.5px solid var(--border2);border-radius:var(--r);padding:20px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.quote-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--teal));}
+.quote-icon{font-family:var(--serif);font-size:48px;color:var(--green-dim);line-height:1;margin-bottom:4px;opacity:.5;}
+.quote-text{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6;margin-bottom:10px;font-style:italic;}
+.quote-author{font-size:12px;color:var(--text3);font-weight:500;}
+.quote-theme{font-size:11px;color:var(--green);background:var(--green-dim);padding:2px 8px;border-radius:10px;display:inline-block;margin-top:6px;}
+
+/* Fast timer */
+.fast-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.fast-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.fast-lbl{font-size:12px;color:var(--text2);}
+.fast-pct-val{font-size:13px;font-weight:500;color:var(--green);}
+.fast-bar-track{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.fast-bar-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s;}
+.fast-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:12px;}
+.fast-big{text-align:center;margin-bottom:12px;}
+.fast-num{font-family:var(--serif);font-size:44px;color:var(--text);line-height:1;}
+.fast-status{font-size:12px;color:var(--text2);margin-top:3px;}
+.fast-btns{display:flex;gap:8px;}
+.fast-btns button{flex:1;padding:10px;border-radius:var(--rsm);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--border2);background:var(--card2);color:var(--text2);}
+.fast-btns button.primary{background:var(--green);border-color:var(--green);color:#0d1f1a;}
+.fast-btns button:active{transform:scale(.97);}
+
+/* Daily overview rings */
+.rings-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.ring-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 6px;text-align:center;cursor:pointer;}
+.ring-card svg{display:block;margin:0 auto 4px;}
+.ring-lbl{font-size:10px;color:var(--text2);}
+.ring-pct{font-size:11px;font-weight:500;color:var(--green);}
+
+/* Water tracker */
+.water-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:10px;}
+.water-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.water-title{font-size:13px;font-weight:500;}
+.water-count{font-size:13px;color:var(--green);font-weight:500;}
+.water-cups{display:flex;gap:5px;flex-wrap:wrap;}
+.wcup{width:34px;height:34px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.wcup.filled{background:var(--blue-dim);border-color:var(--blue);}
+.wcup svg{width:16px;height:16px;stroke:var(--text3);fill:none;stroke-width:1.5;}
+.wcup.filled svg{stroke:var(--blue);}
+
+/* ══════════════════════════════
+   TODAY / HABITS SCREEN
+══════════════════════════════ */
+.today-header{padding:48px 16px 0;background:var(--bg);}
+.macro-bar-wrap{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;}
+.mbar-head{display:flex;justify-content:space-between;margin-bottom:8px;}
+.mbar-title{font-size:12px;font-weight:500;color:var(--text2);}
+.mbar-cals{font-size:12px;font-weight:500;color:var(--text);}
+.mbar-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.mbar-row:last-child{margin-bottom:0;}
+.mbar-l{font-size:10px;width:16px;font-weight:500;}
+.mbar-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.mbar-fill{height:100%;border-radius:3px;transition:width .4s;}
+.mfp{background:#3ecf8e;}.mfc{background:#f4a942;}.mff{background:#a78bfa;}
+.mbar-val{font-size:10px;min-width:52px;text-align:right;}
+
+/* Tab bar within today screen */
+.subtabs{display:flex;gap:5px;overflow-x:auto;margin:12px 0;scrollbar-width:none;padding-bottom:2px;}
+.subtabs::-webkit-scrollbar{display:none;}
+.stab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--sans);white-space:nowrap;}
+.stab.active{background:var(--green);border-color:var(--green);color:#0d1f1a;font-weight:500;}
+.stab-content{display:none;}.stab-content.active{display:block;}
+
+/* Habit rows */
+.habit-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.habit-row:last-child{border-bottom:none;padding-bottom:0;}
+.habit-row:first-child{padding-top:0;}
+.hchk{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--text3);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.hchk.done{background:var(--green);border-color:var(--green);}
+.hchk svg{width:14px;height:14px;stroke:#0d1f1a;stroke-width:2.5;fill:none;opacity:0;transition:opacity .2s;}
+.hchk.done svg{opacity:1;}
+.hlbl{flex:1;}
+.hlbl .hname{font-size:14px;color:var(--text);line-height:1.3;transition:color .2s;}
+.hlbl .hcat{font-size:11px;color:var(--text3);margin-top:1px;}
+.hlbl.done .hname{color:var(--text3);text-decoration:line-through;}
+
+/* Meal rows */
+.meal-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.meal-row:last-child{border-bottom:none;padding-bottom:0;}
+.meal-row:first-child{padding-top:0;}
+.mdot{width:9px;height:9px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .2s;}
+.mdot.logged{background:var(--green);}
+.minfo{flex:1;}
+.mname2{font-size:13px;font-weight:500;}
+.mtime2{font-size:11px;color:var(--text3);}
+.mmacrow{font-size:11px;color:var(--text2);margin-top:2px;}
+.mlog-btn{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--green);cursor:pointer;font-family:var(--sans);}
+.mlog-btn.logged{color:var(--text3);border-color:var(--border);}
+
+/* ══════════════════════════════
+   MEAL PLAN SCREEN
+══════════════════════════════ */
+.plan-header{padding:48px 16px 12px;background:var(--bg);}
+.plan-title{font-family:var(--serif);font-size:24px;}
+.plan-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.targets-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0;}
+.tcard{background:var(--card2);border-radius:var(--rsm);padding:6px 5px;text-align:center;}
+.tnum{font-size:14px;font-weight:500;}
+.tlbl{font-size:9px;color:var(--text3);margin-top:1px;}
+.week-sel{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.wbtn{width:30px;height:30px;border-radius:50%;border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.wlabel{flex:1;text-align:center;font-size:13px;font-weight:500;}
+.wsub{font-size:10px;color:var(--text3);text-align:center;}
+.dtabs{display:flex;gap:5px;overflow-x:auto;margin:12px 0;scrollbar-width:none;padding-bottom:2px;}
+.dtabs::-webkit-scrollbar{display:none;}
+.dtab{flex-shrink:0;padding:6px 14px;border-radius:20px;border:0.5px solid var(--border2);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--sans);white-space:nowrap;}
+.dtab.active{background:var(--green);border-color:var(--green);color:#0d1f1a;font-weight:500;}
+.dtab.done{border-color:var(--teal);color:var(--teal);}
+
+/* Meal detail cards */
+.meal-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.mcard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.mcard-badge{display:flex;flex-direction:column;gap:2px;}
+.mtype-sm{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.mtime-sm{font-size:10px;color:var(--text3);}
+.mcal-badge{background:var(--card2);border-radius:var(--rsm);padding:4px 8px;text-align:right;}
+.mcal-n{font-size:15px;font-weight:500;}
+.mcal-l{font-size:9px;color:var(--text3);}
+.meal-title{font-family:var(--serif);font-size:18px;line-height:1.2;margin-bottom:5px;}
+.meal-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px;}
+.mmacros{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;}
+.mpill{background:var(--card2);border-radius:var(--rsm);padding:5px 4px;text-align:center;}
+.mpill .mpn{font-size:13px;font-weight:500;}
+.mpill .mpl{font-size:9px;color:var(--text3);margin-top:1px;}
+.mpn-cal{color:var(--text);}
+.mpn-p{color:#3ecf8e;}
+.mpn-c{color:#f4a942;}
+.mpn-f{color:#a78bfa;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:12px;font-weight:500;}
+.tg{background:var(--green-dim);color:var(--green);}
+.ta{background:var(--amber-dim);color:var(--amber);}
+.tp{background:var(--purple-dim);color:var(--purple);}
+.tt{background:var(--teal-dim);color:var(--teal);}
+.tc2{background:var(--coral-dim);color:var(--coral);}
+.tb{background:var(--blue-dim);color:var(--blue);}
+.ing-section{border-top:0.5px solid var(--border);padding-top:10px;}
+.ing-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ing-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.scale-badge{font-size:10px;background:var(--amber-dim);color:var(--amber);padding:2px 8px;border-radius:10px;}
+.ing-table{width:100%;border-collapse:collapse;}
+.ing-table tr{border-bottom:0.5px solid var(--border);}
+.ing-table tr:last-child{border-bottom:none;}
+.ing-table td{padding:6px 0;vertical-align:top;}
+.iname{font-size:12px;color:var(--text);line-height:1.3;}
+.iamt{font-size:12px;color:var(--amber);font-weight:500;text-align:right;padding-left:8px;white-space:nowrap;}
+.imacros{font-size:10px;color:var(--text3);text-align:right;padding-left:6px;white-space:nowrap;}
+.prep-note{background:var(--card2);border-radius:var(--rsm);padding:8px 10px;margin-top:10px;font-size:11px;color:var(--text2);line-height:1.5;border-left:2px solid var(--green);}
+.log-btn{width:100%;margin-top:12px;padding:11px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:transparent;color:var(--green);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;}
+.log-btn.logged{background:var(--green-dim);border-color:var(--green);}
+.log-btn:active{transform:scale(.98);}
+
+/* ══════════════════════════════
+   PROGRESS SCREEN
+══════════════════════════════ */
+.prog-header{padding:48px 16px 0;background:var(--bg);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.scard{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;}
+.snum{font-family:var(--serif);font-size:30px;color:var(--green);}
+.slbl{font-size:11px;color:var(--text2);margin-top:3px;}
+.wprog{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:10px;}
+.wp-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.wp-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.wp-row:last-child{margin-bottom:0;}
+.wp-lbl{font-size:12px;color:var(--text2);width:60px;flex-shrink:0;}
+.wp-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.wp-fill{height:100%;background:var(--green);border-radius:3px;}
+.wp-pct{font-size:11px;color:var(--text3);width:28px;text-align:right;}
+.info-card{background:var(--card2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;}
+.info-title{font-size:13px;font-weight:500;margin-bottom:4px;}
+.info-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.checkin-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:10px;}
+.ci-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.choice-row{display:flex;gap:7px;margin-top:8px;}
+.choice-btn{flex:1;padding:9px 4px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:var(--card2);color:var(--text2);font-size:12px;font-family:var(--sans);cursor:pointer;text-align:center;}
+.choice-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.sym-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.sym-btn{padding:8px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:var(--card2);color:var(--text2);font-size:12px;font-family:var(--sans);cursor:pointer;text-align:center;}
+.sym-btn.active{background:var(--purple-dim);border-color:var(--purple);color:var(--purple);}
+.note-area{width:100%;margin-top:8px;padding:9px 11px;background:var(--card2);border:0.5px solid var(--border2);border-radius:var(--rsm);color:var(--text);font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.5;}
+.note-area::placeholder{color:var(--text3);}
+.save-btn{width:100%;margin-top:12px;padding:13px;border-radius:var(--r);background:var(--green);border:none;color:#0d1f1a;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;}
+.save-btn:active{transform:scale(.98);}
+
+/* ══════════════════════════════
+   GROCERY SCREEN
+══════════════════════════════ */
+.groc-header{padding:48px 16px 0;background:var(--bg);}
+.gcol-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;}
+.gcol-title{font-size:13px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.gcol-title svg{width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.gitem{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);}
+.gitem:last-child{border-bottom:none;padding-bottom:0;}
+.gitem:first-child{padding-top:0;}
+.gck{width:22px;height:22px;border-radius:50%;border:1px solid var(--text3);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;margin-top:1px;}
+.gck.done{background:var(--green);border-color:var(--green);}
+.gck svg{width:10px;height:10px;stroke:#0d1f1a;stroke-width:2.5;fill:none;opacity:0;transition:opacity .2s;}
+.gck.done svg{opacity:1;}
+.ginfo{flex:1;}
+.gitm{font-size:13px;color:var(--text);transition:color .2s;line-height:1.3;}
+.gitm.done{color:var(--text3);text-decoration:line-through;}
+.gamt{font-size:11px;color:var(--amber);margin-top:2px;}
+.clear-btn{width:100%;margin-top:8px;padding:9px;border-radius:var(--rsm);border:0.5px solid var(--border2);background:transparent;color:var(--text3);font-family:var(--sans);font-size:12px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- ══ HOME ══ -->
+<div class="home-header" id="home-header">
+  <div class="date-row">
+    <div><div class="date-title" id="h-date">Today</div><div class="date-sub" id="h-sub">Loading...</div></div>
+    <div class="day-pill" id="h-pill">16:8</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <div class="screen active" id="screen-home" style="padding-top:0;">
+
+    <!-- Quote -->
+    <div style="padding:0 16px;">
+      <div class="quote-card">
+        <div class="quote-accent"></div>
+        <div class="quote-icon">"</div>
+        <div class="quote-text" id="q-text">Loading your daily reflection...</div>
+        <div class="quote-author" id="q-author"></div>
+        <div class="quote-theme" id="q-theme"></div>
+      </div>
+
+      <!-- Overview rings -->
+      <div class="rings-row">
+        <div class="ring-card" onclick="go('today')">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#3ecf8e" stroke-width="4"
+              stroke-dasharray="113" stroke-dashoffset="113" id="ring-habits"
+              stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+          <div class="ring-lbl">Habits</div>
+          <div class="ring-pct" id="ring-habits-pct">0%</div>
+        </div>
+        <div class="ring-card" onclick="go('today')">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#f4a942" stroke-width="4"
+              stroke-dasharray="113" stroke-dashoffset="113" id="ring-meals"
+              stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+          <div class="ring-lbl">Meals</div>
+          <div class="ring-pct" id="ring-meals-pct" style="color:var(--amber);">0%</div>
+        </div>
+        <div class="ring-card" onclick="go('home')">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#a78bfa" stroke-width="4"
+              stroke-dasharray="113" stroke-dashoffset="113" id="ring-fast"
+              stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+          <div class="ring-lbl">Fast</div>
+          <div class="ring-pct" id="ring-fast-pct" style="color:var(--purple);">0%</div>
+        </div>
+        <div class="ring-card" onclick="go('home')">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#60a5fa" stroke-width="4"
+              stroke-dasharray="113" stroke-dashoffset="113" id="ring-water"
+              stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+          <div class="ring-lbl">Water</div>
+          <div class="ring-pct" id="ring-water-pct" style="color:var(--blue);">0%</div>
+        </div>
+      </div>
+
+      <!-- Fast timer -->
+      <div class="fast-card">
+        <div class="fast-top"><span class="fast-lbl">Fasting window</span><span class="fast-pct-val" id="fp-pct">0%</span></div>
+        <div class="fast-bar-track"><div class="fast-bar-fill" id="fp-bar" style="width:0%"></div></div>
+        <div class="fast-meta"><span id="fp-elapsed">0h 0m</span><span>Goal: 16 hrs</span></div>
+        <div class="fast-big"><div class="fast-num" id="fp-time">0:00</div><div class="fast-status" id="fp-status">Tap to begin your fast</div></div>
+        <div class="fast-btns">
+          <button class="primary" id="fp-btn" onclick="toggleFast()">Start fast</button>
+          <button onclick="resetFast()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Water tracker -->
+      <div class="water-card">
+        <div class="water-top">
+          <div class="water-title">Water intake</div>
+          <div class="water-count"><span id="w-count">0</span> / 8 cups</div>
+        </div>
+        <div class="water-cups" id="water-cups"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TODAY / HABITS ══ -->
+  <div class="screen" id="screen-today">
+    <div class="today-header">
+      <div style="font-family:var(--serif);font-size:22px;margin-bottom:4px;">Today</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;" id="today-daytype">Standard day</div>
+    </div>
+    <div style="padding:0 16px;">
+      <div class="macro-bar-wrap">
+        <div class="mbar-head"><span class="mbar-title">Macros logged</span><span class="mbar-cals" id="mb-cals">0 / 1,520 kcal</span></div>
+        <div class="mbar-row"><div class="mbar-l" style="color:#3ecf8e;">P</div><div class="mbar-track"><div class="mbar-fill mfp" id="mb-p" style="width:0%"></div></div><div class="mbar-val" style="color:#3ecf8e;" id="mbv-p">0 / 135g</div></div>
+        <div class="mbar-row"><div class="mbar-l" style="color:#f4a942;">C</div><div class="mbar-track"><div class="mbar-fill mfc" id="mb-c" style="width:0%"></div></div><div class="mbar-val" style="color:#f4a942;" id="mbv-c">0 / 125g</div></div>
+        <div class="mbar-row"><div class="mbar-l" style="color:#a78bfa;">F</div><div class="mbar-track"><div class="mbar-fill mff" id="mb-f" style="width:0%"></div></div><div class="mbar-val" style="color:#a78bfa;" id="mbv-f">0 / 58g</div></div>
+      </div>
+      <div class="subtabs" id="subtabs">
+        <div class="stab active" onclick="subTab('morning')">Morning</div>
+        <div class="stab" onclick="subTab('meals')">Meals</div>
+        <div class="stab" onclick="subTab('habits')">Daily habits</div>
+        <div class="stab" onclick="subTab('cortisol')">Cortisol tips</div>
+      </div>
+      <div class="stab-content active" id="stab-morning"><div class="card" id="morning-list"></div></div>
+      <div class="stab-content" id="stab-meals"><div class="card" id="meal-list"></div></div>
+      <div class="stab-content" id="stab-habits"><div class="card" id="habit-list"></div></div>
+      <div class="stab-content" id="stab-cortisol">
+        <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Morning light</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Stand near a window within 30 min of waking. Anchors your cortisol curve and dramatically improves sleep onset.</div></div>
+        <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Delay coffee 90 min</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Cortisol peaks naturally 30–60 min after waking. Coffee on top spikes it further. Wait until 7am+ to blunt the cortisol load.</div></div>
+        <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Post-meal walk</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Even 10 min after Meal 1 or 3 lowers blood glucose, blunts cortisol, and is the easiest movement entry point when energy is low.</div></div>
+        <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Hard stop 8pm</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Screens off or blue-light glasses. Cortisol can't drop if your nervous system stays stimulated. Poor sleep = next-day inflammation.</div></div>
+        <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Lemon + salt water</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">16oz filtered water + juice of ½ lemon + pinch Celtic sea salt on waking. Supports adrenals and blunts morning cortisol spike.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MEAL PLAN ══ -->
+  <div class="screen" id="screen-plan">
+    <div class="plan-header">
+      <div class="plan-title">Meal plan</div>
+      <div class="plan-sub">Food scale · 1,520 kcal · 4-week rotation</div>
+      <div class="targets-row">
+        <div class="tcard"><div class="tnum" style="color:var(--text);">1,520</div><div class="tlbl">kcal</div></div>
+        <div class="tcard"><div class="tnum" style="color:#3ecf8e;">135g</div><div class="tlbl">protein</div></div>
+        <div class="tcard"><div class="tnum" style="color:#f4a942;">125g</div><div class="tlbl">carbs</div></div>
+        <div class="tcard"><div class="tnum" style="color:#a78bfa;">58g</div><div class="tlbl">fat</div></div>
+      </div>
+      <div class="week-sel">
+        <button class="wbtn" onclick="changeWeek(-1)"><svg viewBox="0 0 14 14"><polyline points="9,2 4,7 9,12"/></svg></button>
+        <div><div class="wlabel" id="wlabel">Week 1</div><div class="wsub">4-week rotation</div></div>
+        <button class="wbtn" onclick="changeWeek(1)"><svg viewBox="0 0 14 14"><polyline points="5,2 10,7 5,12"/></svg></button>
+      </div>
+    </div>
+    <div style="padding:0 16px;">
+      <div class="dtabs" id="dtabs"></div>
+      <div id="day-content"></div>
+    </div>
+  </div>
+
+  <!-- ══ PROGRESS ══ -->
+  <div class="screen" id="screen-progress">
+    <div class="prog-header">
+      <div style="font-family:var(--serif);font-size:24px;margin-bottom:14px;">Progress</div>
+    </div>
+    <div style="padding:0 16px;">
+      <div class="stat-grid">
+        <div class="scard"><div class="snum" id="p-meals">0</div><div class="slbl">Meals logged</div></div>
+        <div class="scard"><div class="snum" id="p-streak">0</div><div class="slbl">Full days done</div></div>
+        <div class="scard"><div class="snum" id="p-fast">0</div><div class="slbl">Fast streaks</div></div>
+        <div class="scard"><div class="snum" id="p-water">0</div><div class="slbl">Water today</div></div>
+      </div>
+      <div class="wprog">
+        <div class="wp-title">This week's meal completion</div>
+        <div id="week-rows"></div>
+      </div>
+      <div class="wprog">
+        <div class="wp-title">Today's macro progress</div>
+        <div class="wp-row"><div class="wp-lbl" style="color:#3ecf8e;">Protein</div><div class="wp-track"><div class="wp-fill mfp" id="pm-p"></div></div><div class="wp-pct" id="pm-pv">0%</div></div>
+        <div class="wp-row"><div class="wp-lbl" style="color:#f4a942;">Carbs</div><div class="wp-track"><div class="wp-fill mfc" id="pm-c"></div></div><div class="wp-pct" id="pm-cv">0%</div></div>
+        <div class="wp-row"><div class="wp-lbl" style="color:#a78bfa;">Fat</div><div class="wp-track"><div class="wp-fill mff" id="pm-f"></div></div><div class="wp-pct" id="pm-fv">0%</div></div>
+      </div>
+      <!-- Check-in -->
+      <div class="checkin-card">
+        <div class="ci-title">Daily check-in</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);">Energy</div>
+        <div class="choice-row" id="ci-energy">
+          <div class="choice-btn" onclick="ci('energy',0,this)">Low</div>
+          <div class="choice-btn" onclick="ci('energy',1,this)">Medium</div>
+          <div class="choice-btn" onclick="ci('energy',2,this)">High</div>
+        </div>
+        <div style="font-size:13px;font-weight:500;margin-top:12px;color:var(--text);">Sleep</div>
+        <div class="choice-row" id="ci-sleep">
+          <div class="choice-btn" onclick="ci('sleep',0,this)">Poor</div>
+          <div class="choice-btn" onclick="ci('sleep',1,this)">OK</div>
+          <div class="choice-btn" onclick="ci('sleep',2,this)">Good</div>
+        </div>
+        <div style="font-size:13px;font-weight:500;margin-top:12px;color:var(--text);">Symptoms</div>
+        <div class="sym-grid" id="ci-syms">
+          <div class="sym-btn" onclick="toggleSym(this)">Bloating</div>
+          <div class="sym-btn" onclick="toggleSym(this)">Cramps</div>
+          <div class="sym-btn" onclick="toggleSym(this)">Low mood</div>
+          <div class="sym-btn" onclick="toggleSym(this)">Brain fog</div>
+          <div class="sym-btn" onclick="toggleSym(this)">Fatigue</div>
+          <div class="sym-btn" onclick="toggleSym(this)">Feeling good</div>
+        </div>
+        <textarea class="note-area" id="ci-note" rows="3" placeholder="Cravings, stress, how meals felt…"></textarea>
+        <button class="save-btn" onclick="saveCi()">Save check-in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GROCERY ══ -->
+  <div class="screen" id="screen-grocery">
+    <div class="groc-header">
+      <div style="font-family:var(--serif);font-size:24px;margin-bottom:4px;">Grocery</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Week <span id="g-wk">1</span> — scale-ready quantities</div>
+    </div>
+    <div style="padding:0 16px;">
+      <div id="grocery-content"></div>
+      <button class="clear-btn" onclick="clearGrocery()">Clear all checks</button>
+    </div>
+  </div>
+
+  <!-- ══ FITNESS ══ -->
+  <div class="screen" id="screen-fitness">
+    <div style="padding:48px 16px 0;">
+      <div style="font-family:var(--serif);font-size:26px;line-height:1.1;">Fitness</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px;margin-bottom:14px;">Cable machine · Tue / Thu / Sat · Glutes, low back, core</div>
+
+      <!-- Workout day indicator -->
+      <div id="fit-day-banner"></div>
+
+      <!-- Workout selector tabs -->
+      <div class="subtabs" id="fit-tabs">
+        <div class="stab active" onclick="selWorkout(0)">Phase A</div>
+        <div class="stab" onclick="selWorkout(1)">Phase B</div>
+        <div class="stab" onclick="selWorkout(2)">Phase C</div>
+        <div class="stab" onclick="selWorkout(3)">My log</div>
+      </div>
+
+      <div id="fit-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<nav class="nav">
+  <button class="nav-btn active" id="nav-home" onclick="go('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" id="nav-today" onclick="go('today')">
+    <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <span>Today</span>
+  </button>
+  <button class="nav-btn" id="nav-plan" onclick="go('plan')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Meals</span>
+  </button>
+  <button class="nav-btn" id="nav-progress" onclick="go('progress')">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span>Progress</span>
+  </button>
+  <button class="nav-btn" id="nav-grocery" onclick="go('grocery')">
+    <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <span>Grocery</span>
+  </button>
+  <button class="nav-btn" id="nav-fitness" onclick="go('fitness')">
+    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    <span>Fitness</span>
+  </button>
+</nav>
+
+<script>
+// ── DAILY QUOTES ──
+const QUOTES=[
+  {text:"She is clothed with strength and dignity, and she laughs without fear of the future.",author:"Proverbs 31:25",theme:"Strength"},
+  {text:"You have been assigned this mountain to show others it can be moved.",author:"Mel Robbins",theme:"Purpose"},
+  {text:"Your body hears everything your mind says. Speak kindly.",author:"Naomi Judd",theme:"Self-compassion"},
+  {text:"The woman who follows the crowd will usually go no further than the crowd. The woman who walks alone is likely to find herself in places no one has ever been.",author:"Albert Einstein",theme:"Courage"},
+  {text:"Nourishing yourself in a way that helps you blossom in the direction you want to go is attainable.",author:"Deborah Day",theme:"Nourishment"},
+  {text:"Rest and self-care are so important. When you take time to replenish your spirit, it allows you to serve others from the overflow.",author:"Eleanor Brown",theme:"Rest"},
+  {text:"You are not a problem to be solved. You are a person to be loved.",author:"Glennon Doyle",theme:"Love"},
+  {text:"The secret of getting ahead is getting started.",author:"Mark Twain",theme:"Action"},
+  {text:"Your present circumstances don't determine where you can go — they merely determine where you start.",author:"Nido Qubein",theme:"Growth"},
+  {text:"Be patient with yourself. Nothing in nature blooms all year.",author:"Unknown",theme:"Patience"},
+  {text:"Healing is not linear. Give yourself grace for the days that feel like going backward.",author:"Unknown",theme:"Healing"},
+  {text:"A woman who walks in purpose doesn't have to chase people or opportunities. Her light causes people and opportunities to pursue her.",author:"Unknown",theme:"Purpose"},
+  {text:"You owe yourself the love that you so freely give to other people.",author:"Unknown",theme:"Self-love"},
+  {text:"Take care of your body. It's the only place you have to live.",author:"Jim Rohn",theme:"Health"},
+  {text:"Every day is a chance to begin again.",author:"Unknown",theme:"Renewal"},
+  {text:"Small steps every day lead to big changes over time. Trust the process.",author:"Unknown",theme:"Consistency"},
+  {text:"Your health is an investment, not an expense.",author:"Unknown",theme:"Investment"},
+  {text:"Breathe, darling. This is just a chapter — it's not your whole story.",author:"S.C. Lourie",theme:"Perspective"},
+  {text:"You are capable of amazing things. Believe in the strength within you.",author:"Unknown",theme:"Belief"},
+  {text:"Difficult roads often lead to beautiful destinations.",author:"Zig Ziglar",theme:"Perseverance"},
+  {text:"She believed she could, so she did.",author:"R.S. Grey",theme:"Belief"},
+  {text:"Honor your body which is your representative in this universe.",author:"Gabrielle Roth",theme:"Body wisdom"},
+  {text:"An early morning walk is a blessing for the whole day.",author:"Henry David Thoreau",theme:"Morning"},
+  {text:"You don't have to be perfect to be worthy of love, rest, and nourishment.",author:"Unknown",theme:"Worthiness"},
+  {text:"The groundwork for all happiness is good health.",author:"Leigh Hunt",theme:"Health"},
+  {text:"Wellness is a connection of paths — knowledge and action.",author:"Joshua Welch",theme:"Wellness"},
+  {text:"Let food be thy medicine and medicine be thy food.",author:"Hippocrates",theme:"Nutrition"},
+  {text:"You are one decision away from a completely different life.",author:"Unknown",theme:"Choice"},
+  {text:"Progress, not perfection.",author:"Unknown",theme:"Progress"},
+  {text:"In the middle of difficulty lies opportunity.",author:"Albert Einstein",theme:"Resilience"},
+  {text:"Rest when you're weary. Refresh and renew yourself, your body, your mind, your spirit.",author:"Ralph Marston",theme:"Rest"},
+  {text:"She is powerful not because she isn't scared, but because she goes on so strongly despite the fear.",author:"Atticus",theme:"Courage"},
+  {text:"Do something today that your future self will thank you for.",author:"Sean Patrick Flanery",theme:"Future self"},
+  {text:"I am not afraid of storms, for I am learning how to sail my ship.",author:"Louisa May Alcott",theme:"Growth"},
+  {text:"Every time you eat is an opportunity to nourish your body.",author:"Unknown",theme:"Nourishment"},
+  {text:"You have survived 100% of your worst days.",author:"Unknown",theme:"Resilience"}
+];
+
+// ── MORNING, MEALS, HABITS DATA ──
+const MORNING_HABITS=[
+  {id:'water',name:'Morning water + lemon + salt',cat:'Cortisol reset'},
+  {id:'light',name:'Morning light / window (5 min)',cat:'Cortisol reset'},
+  {id:'meditate',name:'10 min meditation',cat:'Morning routine'},
+  {id:'stretch',name:'Hip mobility — 15 min',cat:'Morning routine'},
+  {id:'coffee',name:'No coffee until 90 min after waking',cat:'Cortisol reset'},
+];
+const DAILY_HABITS=[
+  {id:'supps',name:'Multivitamin + iron with Meal 1',cat:'Supplements'},
+  {id:'kimchi',name:'Kimchi or pickles with a meal',cat:'Gut health'},
+  {id:'walk',name:'10-min post-meal walk',cat:'Movement'},
+  {id:'ironrule',name:'No coffee within 1hr of iron',cat:'Absorption'},
+  {id:'screen',name:'Screens off by 8:30pm',cat:'Sleep'},
+  {id:'bed',name:'In bed by 9:30pm',cat:'Sleep'},
+];
+const PLAN_MEALS=[
+  {id:'meal1',name:'Meal 1 — break fast',time:'11:00 am'},
+  {id:'meal2',name:'Meal 2 — snack',time:'3:00 pm'},
+  {id:'meal3',name:'Meal 3 — dinner',time:'6:30 pm'},
+];
+
+// ── FULL MEAL PLAN DATA (4 weeks × 5 days) ──
+const W=[
+{label:"Week 1",days:[
+ {day:"Mon",meals:[
+  {type:"Meal 1",time:"11 am",name:"Salmon quinoa power bowl",cal:572,p:48,c:41,f:27,prep:"Weigh salmon raw. Quinoa cooked weight. Add kimchi after plating.",tags:[["Omega-3","tt"],["Anti-inflam","tg"],["Estrogen clear","tp"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Quinoa (cooked)","130g",5,28,2,150],["Baby spinach","60g",2,2,0,14],["Avocado","55g",1,3,9,88],["Kimchi","45g",1,2,0,15],["Olive oil","8g",0,0,7,71],["Tahini","8g",2,2,4,48],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Blueberries + walnuts + seeds",cal:298,p:7,c:26,f:19,prep:"Pre-portion Sunday night into a small container for the week.",tags:[["Antioxidants","tp"],["Omega-3","tt"],["Zinc","ta"]],
+   ings:[["Fresh blueberries","110g",1,18,0,76],["Walnuts","20g",3,3,13,131],["Pumpkin seeds","12g",3,2,5,63],["Cinnamon","1g",0,1,0,6]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Herb chicken + roasted frozen veg",cal:446,p:43,c:32,f:16,prep:"Weigh chicken raw. Frozen veg straight from Costco bag to tray.",tags:[["Batch-friendly","tc2"],["High protein","tg"],["Anti-inflam","tt"]],
+   ings:[["Chicken thighs skin-off (raw)","170g",36,0,10,238],["Costco frozen mixed veg","160g",4,18,0,90],["Sweet potato (raw)","80g",1,13,0,58],["Olive oil","8g",0,0,7,71],["Garlic","8g",0,2,0,8],["Coconut aminos","15g",0,3,0,18]]}
+ ]},
+ {day:"Tue",meals:[
+  {type:"Meal 1",time:"11 am",name:"Green goddess chicken bowl",cal:538,p:44,c:37,f:22,prep:"Use leftover batch chicken. Cooked shredded weight shown.",tags:[["High protein","tg"],["Gut health","tg"],["No seed oils","tb"]],
+   ings:[["Chicken thighs cooked shredded","140g",32,0,8,200],["Quinoa (cooked)","130g",5,28,2,150],["Mixed greens","60g",1,3,0,16],["Avocado","55g",1,3,9,88],["Pickles","60g",0,1,0,5],["Olive oil","8g",0,0,7,71],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Mango + pumpkin seeds",cal:188,p:6,c:23,f:7,prep:"Weigh frozen mango slightly frozen — easier to scale.",tags:[["Zinc","ta"],["Hormone support","tp"]],
+   ings:[["Mango frozen","125g",1,21,0,88],["Pumpkin seeds","18g",5,2,7,100]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + bok choy + cauliflower rice",cal:402,p:42,c:21,f:18,prep:"Weigh salmon raw. Costco frozen Asian veg and cauliflower rice direct from bag.",tags:[["Salmon","tt"],["DIM source","tg"],["Low carb","tb"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Costco frozen Asian veg","130g",3,10,0,52],["Cauliflower rice frozen","130g",3,8,0,44],["Olive oil","5g",0,0,5,40],["Coconut aminos","15g",0,3,0,18],["Ginger grated","5g",0,1,0,4],["Sesame seeds","5g",1,0,2,20]]}
+ ]},
+ {day:"Wed",meals:[
+  {type:"Meal 1",time:"11 am",name:"Turmeric egg + quinoa skillet",cal:406,p:27,c:28,f:22,prep:"3 large eggs ≈ 165g without shell. Weigh on scale with shells, subtract ~10g per egg.",tags:[["Eggs","ta"],["Turmeric","ta"],["Gut health","tg"]],
+   ings:[["Eggs large (no shell)","165g",21,2,15,222],["Quinoa (cooked)","100g",4,21,2,116],["Baby spinach","60g",2,2,0,14],["Kimchi","45g",1,2,0,15],["Olive oil","5g",0,0,5,40],["Turmeric","2g",0,0,0,6],["Black pepper","1g",0,0,0,3]]},
+  {type:"Meal 2",time:"3 pm",name:"Dark cherries + almonds",cal:261,p:8,c:28,f:14,prep:"Thaw cherries slightly. Best anti-cramp snack in the plan.",tags:[["Anti-cramp","tc2"],["Antioxidants","tp"],["Magnesium","tt"]],
+   ings:[["Dark cherries frozen","140g",2,22,0,97],["Almonds","28g",6,6,14,164]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Chicken + asparagus + sweet potato",cal:440,p:44,c:27,f:17,prep:"Weigh chicken raw. Frozen asparagus — 10–12 spears per serving.",tags:[["Batch-friendly","tc2"],["Liver support","tt"],["High protein","tg"]],
+   ings:[["Chicken thighs skin-off (raw)","170g",36,0,10,238],["Frozen asparagus","160g",4,8,0,48],["Sweet potato (raw)","80g",1,13,0,58],["Olive oil","8g",0,0,7,71],["Tahini","10g",3,2,5,63],["Lemon juice","15g",0,1,0,4]]}
+ ]},
+ {day:"Thu",meals:[
+  {type:"Meal 1",time:"11 am",name:"Canned salmon avocado bowl",cal:430,p:38,c:14,f:25,prep:"Wild Planet canned salmon (Costco). One can = ~142g drained. Zero cooking.",tags:[["Zero cook","tb"],["Omega-3","tt"],["Gut health","tg"]],
+   ings:[["Canned wild salmon drained","142g",34,0,7,198],["Mixed greens","60g",1,3,0,16],["Avocado","75g",1,4,11,120],["Shredded cabbage","50g",1,3,0,17],["Pickles","60g",0,1,0,5],["Olive oil","8g",0,0,7,71],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Apple + almond butter + cinnamon",cal:262,p:5,c:32,f:14,prep:"Spoon almond butter onto scale for accuracy. Avoid brands with added oils.",tags:[["Blood sugar","ta"],["Anti-inflam","tg"],["Fiber","tt"]],
+   ings:[["Apple medium","182g",0,25,0,95],["Almond butter","24g",5,5,14,155],["Cinnamon","2g",0,1,0,6]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Ground turkey + frozen veg + cauliflower rice",cal:420,p:44,c:28,f:14,prep:"Weigh turkey raw. One pan — cook turkey first, add frozen veg last 3 min.",tags:[["One pan","tg"],["High protein","tg"],["Anti-inflam","tt"]],
+   ings:[["Ground turkey 93% (raw)","170g",38,0,9,238],["Costco frozen stir-fry veg","150g",4,15,0,76],["Cauliflower rice frozen","80g",2,5,0,28],["Coconut aminos","15g",0,3,0,18],["Olive oil","5g",0,0,5,40],["Garlic","8g",0,2,0,8],["Ginger grated","5g",0,1,0,4]]}
+ ]},
+ {day:"Fri",meals:[
+  {type:"Meal 1",time:"11 am",name:"Mango green smoothie bowl",cal:327,p:11,c:58,f:7,prep:"Blend spinach + mango + banana, pour into bowl, top with pre-weighed quinoa and seeds.",tags:[["Friday protocol","tc2"],["Gentle break-fast","tt"],["Vitamin C","ta"]],
+   ings:[["Baby spinach","30g",1,1,0,7],["Mango frozen","125g",1,21,0,88],["Banana","60g",1,13,0,53],["Quinoa (cooked)","100g",4,21,2,116],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 2",time:"3 pm",name:"Mixed berries + walnuts",cal:269,p:5,c:25,f:18,prep:"Pre-portion Thursday night — decision fatigue after a 6am meeting is real.",tags:[["Antioxidants","tp"],["Omega-3","tt"],["Pre-portioned","tg"]],
+   ings:[["Mixed berries frozen","150g",1,22,0,85],["Walnuts","28g",4,4,18,184]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + spinach + Costco frozen veg",cal:390,p:42,c:19,f:17,prep:"Bake salmon from frozen at 400°F for 18–20 min on Fridays — no thawing needed.",tags:[["Friday protocol","tc2"],["Anti-inflam","tg"],["Light dinner","tb"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Costco frozen veg medley","150g",4,15,0,76],["Baby spinach","30g",1,1,0,7],["Olive oil","8g",0,0,7,71],["Turmeric","2g",0,0,0,6],["Lemon juice","15g",0,1,0,4]]}
+ ]}
+]},
+{label:"Week 2",days:[
+ {day:"Mon",meals:[
+  {type:"Meal 1",time:"11 am",name:"Shrimp quinoa bowl",cal:510,p:43,c:42,f:21,prep:"Thaw shrimp in cold water 10 min. Weigh raw peeled. Cooks in 4 min.",tags:[["Quick 15 min","tb"],["High protein","tg"],["Anti-inflam","tg"]],
+   ings:[["Shrimp peeled raw","170g",32,2,2,156],["Quinoa (cooked)","130g",5,28,2,150],["Baby spinach","60g",2,2,0,14],["Avocado","55g",1,3,9,88],["Olive oil","8g",0,0,7,71],["Tahini","8g",2,2,4,48],["Turmeric","2g",0,0,0,6],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Pomegranate arils + pumpkin seeds",cal:183,p:6,c:20,f:8,prep:"Costco Wonderful pomegranate arils — ready to eat, weigh straight from pack.",tags:[["Fibroid support","tp"],["Estrogen balance","tp"],["Zinc","ta"]],
+   ings:[["Pomegranate arils","87g",1,18,1,83],["Pumpkin seeds","18g",5,2,7,100]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Ground turkey + frozen veg + brown rice",cal:498,p:46,c:44,f:16,prep:"Weigh rice cooked. Cook turkey first, add frozen veg last 3 min so it stays crisp.",tags:[["Batch-friendly","tc2"],["High protein","tg"],["Anti-inflam","tt"]],
+   ings:[["Ground turkey 93% (raw)","170g",38,0,9,238],["Costco frozen stir-fry veg","150g",4,15,0,76],["Brown rice (cooked)","100g",3,23,1,109],["Coconut aminos","15g",0,3,0,18],["Ginger grated","5g",0,1,0,4],["Olive oil","5g",0,0,5,40],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Tue",meals:[
+  {type:"Meal 1",time:"11 am",name:"Salmon kale bowl",cal:468,p:43,c:31,f:21,prep:"Weigh salmon raw. Massage kale with lemon + olive oil for 2 min — no cooking needed.",tags:[["Estrogen clear","tp"],["DIM source","tg"],["Iron + vitamin C","ta"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Kale chopped","70g",3,7,1,36],["Quinoa (cooked)","100g",4,21,2,116],["Olive oil","10g",0,0,9,88],["Lemon juice","20g",0,2,0,8],["Capers","10g",0,0,0,5],["Garlic","4g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Mango + walnuts",cal:272,p:5,c:25,f:18,prep:"Simple and fast. Portion walnuts on scale into a snack bag Sunday.",tags:[["Antioxidants","tp"],["Omega-3","tt"]],
+   ings:[["Mango frozen","125g",1,21,0,88],["Walnuts","28g",4,4,18,184]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Chicken + zucchini + frozen veg",cal:432,p:46,c:26,f:17,prep:"Slice zucchini 1cm thick. Add frozen veg last 4 min.",tags:[["Low carb","tb"],["Anti-inflam","tg"],["Batch-friendly","tc2"]],
+   ings:[["Chicken thighs skin-off (raw)","170g",36,0,10,238],["Zucchini","200g",2,7,0,34],["Costco frozen mixed veg","100g",3,10,0,52],["Olive oil","8g",0,0,7,71],["Garlic","8g",0,2,0,8],["Lemon juice","15g",0,1,0,4]]}
+ ]},
+ {day:"Wed",meals:[
+  {type:"Meal 1",time:"11 am",name:"Egg avocado green bowl",cal:478,p:27,c:29,f:30,prep:"Poach or soft-scramble 3 eggs. Weigh avocado flesh only after peeling.",tags:[["Eggs","ta"],["Hormone support","tp"],["Gut health","tg"]],
+   ings:[["Eggs large (no shell)","165g",21,2,15,222],["Quinoa (cooked)","100g",4,21,2,116],["Baby spinach","60g",2,2,0,14],["Avocado","55g",1,3,9,88],["Kimchi","45g",1,2,0,15],["Olive oil","5g",0,0,5,40],["Turmeric","2g",0,0,0,6]]},
+  {type:"Meal 2",time:"3 pm",name:"Dark cherries + pumpkin seeds",cal:147,p:5,c:23,f:5,prep:"Still cold from freezer is fine.",tags:[["Anti-cramp","tc2"],["Zinc","ta"]],
+   ings:[["Dark cherries frozen","138g",2,22,0,97],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Shrimp + frozen Asian veg + cauliflower rice",cal:342,p:40,c:26,f:9,prep:"Weigh shrimp raw. Frozen veg and cauliflower rice direct from bag — no thawing.",tags:[["Quick","tb"],["Low carb","tb"],["Anti-inflam","tg"]],
+   ings:[["Shrimp peeled raw","170g",32,2,2,156],["Costco frozen Asian veg","150g",4,12,0,64],["Cauliflower rice frozen","100g",2,5,0,28],["Coconut aminos","15g",0,3,0,18],["Olive oil","5g",0,0,5,40],["Sesame seeds","5g",1,0,2,20],["Ginger grated","5g",0,1,0,4],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Thu",meals:[
+  {type:"Meal 1",time:"11 am",name:"Turkey taco bowl",cal:468,p:39,c:31,f:22,prep:"Weigh turkey raw. Season with cumin, garlic powder, salt. Weigh avocado flesh only.",tags:[["High protein","tg"],["Gut health","tg"],["No seed oils","tb"]],
+   ings:[["Ground turkey 93% (raw)","142g",32,0,7,198],["Quinoa (cooked)","100g",4,21,2,116],["Shredded cabbage","50g",1,3,0,17],["Avocado","55g",1,3,9,88],["Pickles","60g",0,1,0,5],["Olive oil","5g",0,0,5,40],["Lime juice","15g",0,2,0,8]]},
+  {type:"Meal 2",time:"3 pm",name:"Apple + almond butter",cal:258,p:5,c:32,f:14,prep:"Almond butter — weigh by spooning directly into the bowl on the scale.",tags:[["Blood sugar","ta"],["Fiber","tt"]],
+   ings:[["Apple","182g",0,25,0,95],["Almond butter","24g",5,5,14,155],["Cinnamon","2g",0,1,0,6]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + sweet potato + frozen veg",cal:442,p:41,c:31,f:18,prep:"Bake salmon and sweet potato together at 400°F. Weigh sweet potato raw.",tags:[["Salmon","tt"],["Anti-inflam","tg"],["Complete meal","tg"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Sweet potato (raw)","80g",1,13,0,58],["Costco frozen veg medley","150g",4,15,0,76],["Olive oil","8g",0,0,7,71],["Garlic","8g",0,2,0,8],["Turmeric","2g",0,0,0,6]]}
+ ]},
+ {day:"Fri",meals:[
+  {type:"Meal 1",time:"11 am",name:"Citrus recovery bowl",cal:322,p:10,c:61,f:6,prep:"Take multivitamin + iron with this meal. Vitamin C here boosts iron absorption.",tags:[["Friday protocol","tc2"],["Vitamin C + iron","ta"],["Gentle break-fast","tt"]],
+   ings:[["Orange segments","130g",1,15,0,62],["Blueberries","75g",1,11,0,43],["Banana","60g",1,13,0,53],["Quinoa (cooked)","100g",4,21,2,116],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 2",time:"3 pm",name:"Mixed berries + almonds",cal:248,p:7,c:27,f:14,prep:"Weigh almonds from Costco bag into container Thursday night.",tags:[["Antioxidants","tp"],["Magnesium","tt"]],
+   ings:[["Mixed berries frozen","150g",1,22,0,85],["Almonds","28g",6,6,14,164]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Turkey + roasted cauliflower",cal:360,p:39,c:18,f:14,prep:"Weigh turkey raw. Frozen cauliflower direct to tray — toss with oil and turmeric.",tags:[["Friday protocol","tc2"],["Anti-inflam","tg"],["Light dinner","tb"]],
+   ings:[["Ground turkey 93% (raw)","142g",32,0,7,198],["Cauliflower frozen","200g",6,14,0,80],["Olive oil","8g",0,0,7,71],["Turmeric","2g",0,0,0,6],["Garlic","8g",0,2,0,8]]}
+ ]}
+]},
+{label:"Week 3",days:[
+ {day:"Mon",meals:[
+  {type:"Meal 1",time:"11 am",name:"Salmon farro bowl",cal:542,p:43,c:36,f:27,prep:"Weigh salmon raw. Cook farro in bulk Sunday — keeps 5 days refrigerated.",tags:[["Salmon","tt"],["Farro base","ta"],["Anti-inflam","tg"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Farro (cooked)","100g",4,26,1,130],["Arugula + spinach mix","60g",2,2,0,14],["Avocado","55g",1,3,9,88],["Pickles","60g",0,1,0,5],["Olive oil","10g",0,0,9,88],["Lemon juice","15g",0,1,0,4],["Capers","8g",0,0,0,5]]},
+  {type:"Meal 2",time:"3 pm",name:"Pomegranate + walnuts + cinnamon",cal:270,p:5,c:22,f:19,prep:"Weigh pomegranate arils from Costco Wonderful pack.",tags:[["Fibroid support","tp"],["Omega-3","tt"]],
+   ings:[["Pomegranate arils","87g",1,18,1,83],["Walnuts","28g",4,4,18,184],["Cinnamon","1g",0,0,0,3]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Chicken + frozen brussels sprouts + veg",cal:443,p:47,c:25,f:16,prep:"Weigh chicken raw. Brussels sprouts go straight to sheet pan at 425°F for 22–25 min.",tags:[["DIM source","tg"],["Batch-friendly","tc2"],["Gut health","tg"]],
+   ings:[["Chicken thighs skin-off (raw)","170g",36,0,10,238],["Frozen brussels sprouts","150g",6,15,0,84],["Costco frozen mixed veg","80g",2,8,0,40],["Olive oil","8g",0,0,7,71],["Garlic","8g",0,2,0,8],["Kimchi","45g",1,2,0,15]]}
+ ]},
+ {day:"Tue",meals:[
+  {type:"Meal 1",time:"11 am",name:"Shrimp mango avocado salad",cal:398,p:36,c:27,f:18,prep:"Weigh shrimp raw. No grains — a lighter Meal 1.",tags:[["Quick","tb"],["Anti-inflam","tg"],["No grains","tb"]],
+   ings:[["Shrimp peeled raw","170g",32,2,2,156],["Mixed greens","60g",1,3,0,16],["Mango","83g",1,14,0,59],["Avocado","55g",1,3,9,88],["Cucumber","55g",0,2,0,8],["Olive oil","8g",0,0,7,71],["Lime juice","15g",0,2,0,8]]},
+  {type:"Meal 2",time:"3 pm",name:"Blueberries + pumpkin seeds",cal:176,p:6,c:20,f:7,prep:"Light snack — pairs with a higher-calorie Meal 1 and 3.",tags:[["Antioxidants","tp"],["Zinc","ta"]],
+   ings:[["Blueberries","110g",1,18,0,76],["Pumpkin seeds","18g",5,2,7,100]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Turkey sweet potato hash",cal:408,p:45,c:27,f:16,prep:"Weigh turkey raw. Dice sweet potato small (1cm). Add frozen spinach from bag.",tags:[["One pan","tg"],["High protein","tg"],["Batch-friendly","tc2"]],
+   ings:[["Ground turkey 93% (raw)","170g",38,0,9,238],["Sweet potato (raw)","80g",1,13,0,58],["Frozen spinach","80g",4,4,1,38],["Onion","40g",0,4,0,18],["Olive oil","5g",0,0,5,40],["Cumin","2g",0,1,0,6],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Wed",meals:[
+  {type:"Meal 1",time:"11 am",name:"Egg cabbage stir bowl",cal:338,p:22,c:15,f:22,prep:"Weigh eggs. Pre-shredded cabbage bags from Costco work perfectly here.",tags:[["Eggs","ta"],["DIM source","tg"],["Gut health","tp"]],
+   ings:[["Eggs large (no shell)","165g",21,2,15,222],["Shredded cabbage","90g",1,5,0,23],["Scallions","30g",0,2,0,10],["Kimchi","45g",1,2,0,15],["Coconut aminos","15g",0,3,0,18],["Olive oil","5g",0,0,5,40],["Ginger grated","5g",0,1,0,4],["Sesame seeds","5g",1,0,2,20]]},
+  {type:"Meal 2",time:"3 pm",name:"Dark cherries + walnuts",cal:281,p:6,c:26,f:18,prep:"Thaw cherries slightly. Pre-portioned walnuts from Costco bag.",tags:[["Anti-cramp","tc2"],["Omega-3","tt"]],
+   ings:[["Dark cherries frozen","138g",2,22,0,97],["Walnuts","28g",4,4,18,184]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + zucchini + quinoa",cal:481,p:45,c:39,f:18,prep:"Weigh salmon raw. Sauté zucchini 4 min. Add precooked quinoa to warm.",tags:[["Salmon","tt"],["Anti-inflam","tg"],["Complete meal","tg"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Zucchini","200g",2,7,0,34],["Costco frozen mixed veg","100g",3,10,0,52],["Quinoa (cooked)","100g",4,21,2,116],["Olive oil","8g",0,0,7,71],["Lemon juice","15g",0,1,0,4]]}
+ ]},
+ {day:"Thu",meals:[
+  {type:"Meal 1",time:"11 am",name:"Chicken farro bowl",cal:520,p:44,c:40,f:23,prep:"Weigh cooked shredded chicken. Use Sunday batch farro.",tags:[["High protein","tg"],["Liver support","tt"],["High fiber","tt"]],
+   ings:[["Chicken thighs cooked shredded","140g",32,0,8,200],["Farro (cooked)","100g",4,26,1,130],["Frozen asparagus","150g",3,6,0,36],["Avocado","55g",1,3,9,88],["Pickles","60g",0,1,0,5],["Tahini","10g",3,2,5,63],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Pear + almond butter",cal:199,p:4,c:30,f:9,prep:"Weigh almond butter directly — it compresses so spoons are inaccurate.",tags:[["Blood sugar","ta"],["Fiber","tt"]],
+   ings:[["Pear","178g",1,27,0,101],["Almond butter","16g",3,3,9,98]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Shrimp + cauliflower rice + Asian veg",cal:350,p:40,c:27,f:10,prep:"Weigh shrimp raw. Cauliflower rice and Asian veg direct from Costco bags.",tags:[["Low carb","tb"],["Quick","tb"],["Anti-inflam","tg"]],
+   ings:[["Shrimp peeled raw","170g",32,2,2,156],["Cauliflower rice frozen","150g",4,10,0,56],["Costco frozen Asian veg","100g",3,8,0,44],["Coconut aminos","15g",0,3,0,18],["Olive oil","5g",0,0,5,40],["Lime juice","15g",0,2,0,8],["Sesame seeds","5g",1,0,2,20],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Fri",meals:[
+  {type:"Meal 1",time:"11 am",name:"Tropical smoothie bowl",cal:323,p:10,c:60,f:6,prep:"Blend, then weigh toppings separately. Pineapple bromelain reduces inflammation.",tags:[["Friday protocol","tc2"],["Bromelain","tt"],["Gentle break-fast","tt"]],
+   ings:[["Mango frozen","83g",1,14,0,59],["Pineapple frozen","83g",0,11,0,42],["Baby spinach","30g",1,1,0,7],["Quinoa (cooked)","100g",4,21,2,116],["Banana","60g",1,13,0,53],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 2",time:"3 pm",name:"Blueberries + almonds",cal:240,p:7,c:24,f:14,prep:"Portion into container Thursday night.",tags:[["Antioxidants","tp"],["Magnesium","tt"]],
+   ings:[["Blueberries","110g",1,18,0,76],["Almonds","28g",6,6,14,164]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Turkey + frozen brussels + cauliflower",cal:370,p:39,c:21,f:15,prep:"Weigh turkey raw. Both frozen veggies direct to sheet pan. Easy Friday cleanup.",tags:[["Friday protocol","tc2"],["DIM source","tg"],["Light dinner","tb"]],
+   ings:[["Ground turkey 93% (raw)","142g",32,0,7,198],["Frozen brussels sprouts","100g",4,10,0,56],["Cauliflower frozen","100g",3,7,0,40],["Olive oil","8g",0,0,7,71],["Garlic","8g",0,2,0,8],["Lemon juice","15g",0,1,0,4]]}
+ ]}
+]},
+{label:"Week 4",days:[
+ {day:"Mon",meals:[
+  {type:"Meal 1",time:"11 am",name:"Salmon brown rice bowl",cal:504,p:43,c:33,f:25,prep:"Weigh salmon raw. Brown rice cooked weight. Add kimchi cold after plating.",tags:[["Salmon","tt"],["Gut health","tg"],["Anti-inflam","tg"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Brown rice (cooked)","100g",3,23,1,109],["Baby spinach","60g",2,2,0,14],["Kimchi","45g",1,2,0,15],["Avocado","55g",1,3,9,88],["Olive oil","5g",0,0,5,40],["Turmeric","2g",0,0,0,6],["Ginger grated","3g",0,0,0,2]]},
+  {type:"Meal 2",time:"3 pm",name:"Dark cherries + pumpkin seeds",cal:147,p:5,c:23,f:5,prep:"Portion from Costco frozen bag Sunday.",tags:[["Anti-cramp","tc2"],["Zinc","ta"]],
+   ings:[["Dark cherries frozen","138g",2,22,0,97],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 3",time:"6:30 pm",name:"One-tray chicken + cauliflower + sweet potato",cal:430,p:45,c:27,f:17,prep:"Weigh chicken raw. Everything on one tray 425°F, 30 min, flip halfway.",tags:[["One tray","tg"],["Batch-friendly","tc2"],["Anti-inflam","tg"]],
+   ings:[["Chicken thighs skin-off (raw)","170g",36,0,10,238],["Cauliflower frozen","150g",4,10,0,56],["Sweet potato (raw)","80g",1,13,0,58],["Olive oil","8g",0,0,7,71],["Turmeric","2g",0,0,0,6],["Cumin","2g",0,1,0,6],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Tue",meals:[
+  {type:"Meal 1",time:"11 am",name:"Canned salmon lettuce cups",cal:370,p:38,c:14,f:19,prep:"One can = 142g drained. Weigh avocado flesh only. Zero cooking.",tags:[["Zero cook","tb"],["Omega-3","tt"],["DIM source","tg"]],
+   ings:[["Canned wild salmon drained","142g",34,0,7,198],["Romaine leaves","60g",1,3,0,16],["Avocado","75g",1,4,11,120],["Shredded cabbage","50g",1,3,0,17],["Pickles","60g",0,1,0,5],["Lime juice","15g",0,2,0,8],["Ginger grated","3g",0,0,0,2]]},
+  {type:"Meal 2",time:"3 pm",name:"Mango + pumpkin seeds",cal:188,p:6,c:23,f:7,prep:"Weigh mango frozen from Costco bag.",tags:[["Zinc","ta"],["Hormone support","tp"]],
+   ings:[["Mango frozen","125g",1,21,0,88],["Pumpkin seeds","18g",5,2,7,100]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + asparagus + farro",cal:476,p:43,c:34,f:19,prep:"Weigh salmon raw. Frozen asparagus roasts well at 400°F for 15 min from frozen.",tags:[["Salmon","tt"],["Liver support","tt"],["Anti-inflam","tg"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Frozen asparagus","150g",3,6,0,36],["Farro (cooked)","100g",4,26,1,130],["Olive oil","8g",0,0,7,71],["Capers","10g",0,0,0,5],["Lemon juice","15g",0,1,0,4]]}
+ ]},
+ {day:"Wed",meals:[
+  {type:"Meal 1",time:"11 am",name:"Shrimp spinach quinoa bowl",cal:484,p:43,c:42,f:19,prep:"Weigh shrimp raw. Add kimchi cold after cooking.",tags:[["Quick","tb"],["Anti-inflam","tg"],["Gut health","tg"]],
+   ings:[["Shrimp peeled raw","170g",32,2,2,156],["Quinoa (cooked)","130g",5,28,2,150],["Baby spinach","60g",2,2,0,14],["Avocado","40g",1,2,7,64],["Kimchi","45g",1,2,0,15],["Olive oil","5g",0,0,5,40],["Turmeric","2g",0,0,0,6],["Lemon juice","15g",0,1,0,4]]},
+  {type:"Meal 2",time:"3 pm",name:"Apple + walnuts + cinnamon",cal:284,p:4,c:30,f:18,prep:"Slice apple into wedges. Pre-portion walnuts.",tags:[["Blood sugar","ta"],["Omega-3","tt"]],
+   ings:[["Apple","182g",0,25,0,95],["Walnuts","28g",4,4,18,184],["Cinnamon","2g",0,1,0,6]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Egg zucchini bake",cal:405,p:30,c:17,f:27,prep:"Use 4 eggs. Bake in cast iron at 375°F for 20 min. Make Sunday, eat Wed.",tags:[["Eggs","ta"],["Batch-friendly","tc2"],["Light","tb"]],
+   ings:[["Eggs large (no shell)","220g",27,2,20,296],["Zucchini","200g",2,7,0,34],["Frozen spinach","80g",4,4,1,38],["Scallions","30g",0,2,0,10],["Olive oil","5g",0,0,5,40],["Garlic","4g",0,1,0,4]]}
+ ]},
+ {day:"Thu",meals:[
+  {type:"Meal 1",time:"11 am",name:"Chicken kale quinoa bowl",cal:500,p:43,c:33,f:25,prep:"Weigh cooked shredded chicken. Massage kale with lemon before building the bowl.",tags:[["Estrogen clear","tp"],["High protein","tg"],["High fiber","tt"]],
+   ings:[["Chicken thighs cooked shredded","140g",32,0,8,200],["Quinoa (cooked)","100g",4,21,2,116],["Kale chopped","50g",2,5,1,34],["Avocado","55g",1,3,9,88],["Pickles","60g",0,1,0,5],["Tahini","10g",3,2,5,63],["Lemon juice","15g",0,1,0,4],["Ginger grated","3g",0,0,0,2]]},
+  {type:"Meal 2",time:"3 pm",name:"Pomegranate + almonds",cal:247,p:7,c:24,f:15,prep:"Weigh arils from pack. Almonds from Costco bag.",tags:[["Fibroid support","tp"],["Magnesium","tt"]],
+   ings:[["Pomegranate arils","87g",1,18,1,83],["Almonds","28g",6,6,14,164]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Turkey + Costco veg medley + brown rice",cal:468,p:46,c:44,f:12,prep:"Weigh turkey raw. Costco frozen veg medley straight from freezer to pan.",tags:[["Batch-friendly","tc2"],["High protein","tg"],["Anti-inflam","tg"]],
+   ings:[["Ground turkey 93% (raw)","170g",38,0,9,238],["Costco frozen veg medley","150g",4,15,0,76],["Brown rice (cooked)","100g",3,23,1,109],["Coconut aminos","15g",0,3,0,18],["Ginger grated","5g",0,1,0,4],["Sesame seeds","5g",1,0,2,20],["Garlic","8g",0,2,0,8]]}
+ ]},
+ {day:"Fri",meals:[
+  {type:"Meal 1",time:"11 am",name:"Berry recovery bowl",cal:382,p:12,c:55,f:15,prep:"Blend spinach + berries + banana. Top with pre-weighed quinoa, walnuts, seeds. Take iron now.",tags:[["Friday protocol","tc2"],["Antioxidants","tp"],["Gentle break-fast","tt"]],
+   ings:[["Mixed berries frozen","111g",1,16,0,64],["Banana","60g",1,13,0,53],["Baby spinach","30g",1,1,0,7],["Quinoa (cooked)","100g",4,21,2,116],["Walnuts","14g",2,2,9,93],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 2",time:"3 pm",name:"Pear + pumpkin seeds",cal:151,p:4,c:28,f:4,prep:"Light snack — pumpkin seeds pre-portioned.",tags:[["Blood sugar","ta"],["Zinc","tt"]],
+   ings:[["Pear","178g",1,27,0,101],["Pumpkin seeds","9g",3,1,4,50]]},
+  {type:"Meal 3",time:"6:30 pm",name:"Salmon + spinach + frozen cauliflower",cal:396,p:43,c:18,f:17,prep:"Bake salmon at 400°F 18 min from frozen. Microwave cauliflower 4 min. Sauté spinach 2 min.",tags:[["Friday protocol","tc2"],["Anti-inflam","tg"],["Light dinner","tb"]],
+   ings:[["Wild salmon (raw)","142g",35,0,10,234],["Cauliflower frozen","200g",6,14,0,80],["Baby spinach","30g",1,1,0,7],["Olive oil","8g",0,0,7,71],["Turmeric","2g",0,0,0,6],["Lemon juice","15g",0,1,0,4]]}
+ ]}
+]}
+];
+
+const GROCERY=[
+ {proteins:[["Wild salmon frozen (Costco)","4 fillets × 142g raw = 568g total"],["Chicken thighs skin-off (Costco)","~850g raw (6–8 thighs)"],["Eggs (Costco)","1 dozen"],["Canned wild salmon – Wild Planet","1 can (142g drained)"]],
+  produce:[["Baby spinach (Costco tub)","1 × 142g tub"],["Mixed greens","1 container"],["Avocado","5–6 (ripen at room temp)"],["Zucchini","1 medium ~200g"],["Sweet potato","2 medium ~160g each raw"],["Cucumber","1 small"],["Cabbage shredded (Costco bag)","use from bag"],["Garlic","1 head"],["Lemon","5–6"],["Lime","2"],["Mango frozen (Costco)","use from bag"],["Blueberries fresh or frozen","2 pints or 1 bag"],["Dark cherries frozen (Costco)","use from bag"],["Mixed berries frozen (Costco)","use from bag"],["Apple","3 medium ~182g each"],["Banana","1 bunch"],["Pomegranate arils (Costco Wonderful)","1 pack"]],
+  pantry:[["Quinoa (Costco bulk)","cook 2 cups dry Sunday = ~600g cooked"],["Cauliflower rice frozen (Costco)","1 bag"],["Costco frozen mixed veg (large bag)","1 bag"],["Costco frozen Asian veg blend","1 bag"],["Coconut aminos","1 bottle"],["Extra virgin olive oil (Costco)","in stock"],["Tahini (no seed oil)","1 jar"],["Almond butter (Costco – no added oil)","in stock"],["Walnuts (Costco)","from bag"],["Pumpkin seeds (Costco)","from bag"],["Almonds (Costco)","from bag"],["Kimchi","1 jar"],["Pickles","1 jar"],["Turmeric","in stock"],["Cinnamon","in stock"],["Sesame seeds","1 small bag"],["Sea salt + black pepper","in stock"],["Capers","1 small jar"]]},
+ {proteins:[["Shrimp frozen large peeled (Costco)","170g raw per serving"],["Ground turkey 93% lean","~600g raw total"],["Wild salmon frozen","3 fillets × 142g raw"],["Chicken thighs skin-off","~700g raw (5 thighs)"],["Eggs","1 dozen"]],
+  produce:[["Mixed greens","1 container"],["Baby spinach (Costco tub)","1 tub"],["Kale","1 bunch ~70g needed"],["Zucchini","2 medium"],["Avocado","5"],["Onion","1 small"],["Lemon","4"],["Lime","2"],["Mango frozen","use from bag"],["Blueberries","1 pint or bag"],["Dark cherries frozen","use from bag"],["Mixed berries frozen","use from bag"],["Apple","2 medium"],["Orange","3 medium ~130g each"],["Banana","1 bunch"],["Pomegranate arils","1 pack"]],
+  pantry:[["Farro","1 bag ~500g"],["Brown rice","1 bag"],["Cauliflower rice frozen","use from bag"],["Costco frozen stir-fry veg","use from bag"],["Costco frozen Asian veg blend","use from bag"],["Coconut aminos","in stock"],["Olive oil","in stock"],["Capers","in stock"],["Sesame seeds","in stock"],["Cumin","in stock"],["Tahini","in stock"],["Almond butter","in stock"],["Walnuts","from bag"],["Pumpkin seeds","from bag"],["Almonds","from bag"]]},
+ {proteins:[["Shrimp frozen large peeled","use from bag"],["Wild salmon frozen","4 fillets × 142g"],["Chicken thighs skin-off","~700g raw"],["Ground turkey 93%","~600g raw"],["Eggs","1 dozen"]],
+  produce:[["Mixed greens","1 container"],["Baby spinach tub","1 tub"],["Kale","1 bunch"],["Zucchini","1 large ~200g"],["Cabbage shredded","use from bag"],["Frozen brussels sprouts (Costco)","1 bag"],["Frozen asparagus (Costco)","1 bag"],["Avocado","5"],["Scallions","1 bunch"],["Onion","1 small"],["Lemon","4"],["Lime","1"],["Mango frozen","use from bag"],["Blueberries","1 pint"],["Dark cherries frozen","use from bag"],["Mixed berries frozen","use from bag"],["Pineapple frozen (Costco)","use from bag"],["Pear","2"],["Banana","1 bunch"],["Pomegranate arils","1 pack"]],
+  pantry:[["Farro","in stock"],["Quinoa","from bag"],["Cauliflower rice frozen","use from bag"],["Costco frozen mixed veg","use from bag"],["Costco frozen Asian veg","use from bag"],["Coconut aminos","in stock"],["Olive oil","in stock"],["Capers","in stock"],["Sesame seeds","in stock"],["Cumin","in stock"],["Tahini","in stock"],["Almond butter","in stock"],["Walnuts","from bag"],["Pumpkin seeds","from bag"],["Almonds","from bag"]]},
+ {proteins:[["Wild salmon frozen","4 fillets × 142g"],["Canned wild salmon Wild Planet","1–2 cans"],["Chicken thighs skin-off","~700g raw"],["Ground turkey 93%","~600g raw"],["Shrimp frozen large peeled","use from bag"],["Eggs","1 dozen"]],
+  produce:[["Baby spinach tub","1 tub"],["Kale","1 bunch"],["Frozen cauliflower (Costco)","use from bag"],["Frozen brussels sprouts","use from bag"],["Frozen asparagus","use from bag"],["Zucchini","1 medium"],["Cabbage shredded","use from bag"],["Romaine","1 head"],["Avocado","5"],["Scallions","1 bunch"],["Sweet potato","1 medium ~160g raw"],["Lemon","4"],["Lime","1"],["Mango frozen","use from bag"],["Dark cherries frozen","use from bag"],["Mixed berries frozen","use from bag"],["Apple","2"],["Pear","2"],["Banana","1 bunch"],["Pomegranate arils","1 pack"]],
+  pantry:[["Quinoa","from bag"],["Brown rice","in stock"],["Farro","in stock"],["Cauliflower rice frozen","use from bag"],["Costco frozen veg medley","use from bag"],["Coconut aminos","in stock"],["Olive oil","in stock"],["Capers","in stock"],["Sesame seeds","in stock"],["Turmeric","in stock"],["Ginger fresh","1 knob"],["Tahini","in stock"],["Almond butter","in stock"],["Walnuts","from bag"],["Pumpkin seeds","from bag"],["Almonds","from bag"]]}
+];
+
+const TARGETS={cal:1520,p:135,c:125,f:58};
+
+// ── STATE ──
+let S=(()=>{try{return JSON.parse(localStorage.getItem('thrive_unified_v1')||'null');}catch(e){return null;}})()
+ ||{w:0,logged:{},mlogged:{},morn:{},habits:{},water:0,grocery:{},ci:{energy:-1,sleep:-1,syms:[]},fastStart:null,fastActive:false,streaks:{days:0,fast:0},fitSets:{},fitDone:{},fitLog:[]};
+function save(){try{localStorage.setItem('thrive_unified_v1',JSON.stringify(S));}catch(e){}}
+let curDay=0;
+let fastTick=null;
+
+// ── NAV ──
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+n).classList.add('active');
+  document.getElementById('nav-'+n).classList.add('active');
+  if(n==='plan')renderPlan();
+  if(n==='progress')renderProgress();
+  if(n==='grocery')renderGrocery();
+  if(n==='today')renderToday();
+  if(n==='fitness')renderFitness();
+}
+
+// ── HEADER ──
+function initHeader(){
+  const now=new Date();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('h-date').textContent=days[now.getDay()];
+  document.getElementById('h-sub').textContent=months[now.getMonth()]+' '+now.getDate();
+  const d=now.getDay();
+  const pill=document.getElementById('h-pill');
+  if(d===5){pill.textContent='6am Friday';pill.className='day-pill coral';}
+  else if(d===2||d===4){pill.textContent='7am meeting';pill.className='day-pill amber';}
+  else{pill.textContent='Standard day';pill.className='day-pill';}
+  document.getElementById('today-daytype').textContent=
+    d===5?'Friday — 6am meeting day':d===2||d===4?'7am meeting day — cortisol buffer at 9am':'Standard day — 16:8 window';
+}
+
+// ── QUOTE ──
+function renderQuote(){
+  const idx=new Date().getDate()%QUOTES.length;
+  const q=QUOTES[idx];
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-author').textContent='— '+q.author;
+  document.getElementById('q-theme').textContent=q.theme;
+}
+
+// ── RINGS (overview on home) ──
+function updateRings(){
+  const mDone=Object.values(S.morn).filter(Boolean).length;
+  const hDone=Object.values(S.habits).filter(Boolean).length;
+  const mlDone=Object.values(S.mlogged).filter(Boolean).length;
+  const hPct=Math.round(((mDone+hDone)/(MORNING_HABITS.length+DAILY_HABITS.length))*100);
+  const mlPct=Math.round((mlDone/PLAN_MEALS.length)*100);
+  const fPct=getFastPct();
+  const wPct=Math.min(100,Math.round((S.water/8)*100));
+  setRing('ring-habits',hPct);setRing('ring-meals',mlPct);
+  setRing('ring-fast',fPct);setRing('ring-water',wPct);
+  document.getElementById('ring-habits-pct').textContent=hPct+'%';
+  document.getElementById('ring-meals-pct').textContent=mlPct+'%';
+  document.getElementById('ring-fast-pct').textContent=fPct+'%';
+  document.getElementById('ring-water-pct').textContent=wPct+'%';
+}
+function setRing(id,pct){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const circ=2*Math.PI*18;
+  el.style.strokeDashoffset=circ-(circ*pct/100);
+}
+
+// ── WATER ──
+function renderWater(){
+  const el=document.getElementById('water-cups');
+  el.innerHTML=Array.from({length:8},(_,i)=>`
+    <div class="wcup ${i<S.water?'filled':''}" onclick="tapWater(${i})">
+      <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+    </div>`).join('');
+  document.getElementById('w-count').textContent=S.water;
+}
+function tapWater(i){S.water=i<S.water?i:i+1;save();renderWater();updateRings();}
+
+// ── FAST TIMER ──
+function toggleFast(){
+  if(!S.fastActive){
+    S.fastStart=Date.now();S.fastActive=true;
+    document.getElementById('fp-btn').textContent='End fast';
+    document.getElementById('fp-btn').classList.remove('primary');
+    startFastTick();
+  }else{
+    S.fastActive=false;S.fastStart=null;clearInterval(fastTick);
+    document.getElementById('fp-btn').textContent='Start fast';
+    document.getElementById('fp-btn').classList.add('primary');
+    updateFastUI();
+  }save();
+}
+function resetFast(){S.fastActive=false;S.fastStart=null;clearInterval(fastTick);document.getElementById('fp-btn').textContent='Start fast';document.getElementById('fp-btn').classList.add('primary');updateFastUI();save();}
+function startFastTick(){clearInterval(fastTick);updateFastUI();fastTick=setInterval(updateFastUI,15000);}
+function getFastPct(){
+  if(!S.fastStart||!S.fastActive)return 0;
+  return Math.min(100,Math.round(((Date.now()-S.fastStart)/1000/3600/16)*100));
+}
+function updateFastUI(){
+  if(!S.fastStart||!S.fastActive){
+    ['fp-bar','fp-pct','fp-elapsed','fp-time','fp-status'].forEach(id=>{
+      const el=document.getElementById(id);if(!el)return;
+      if(id==='fp-bar')el.style.width='0%';
+      else if(id==='fp-pct')el.textContent='0%';
+      else if(id==='fp-elapsed')el.textContent='0h 0m';
+      else if(id==='fp-time')el.textContent='0:00';
+      else if(id==='fp-status')el.textContent='Tap to begin your fast';
+    });
+    updateRings();return;
+  }
+  const el=(Date.now()-S.fastStart)/1000/3600;
+  const pct=Math.min(100,Math.round(el/16*100));
+  const h=Math.floor(el);const m=Math.round((el-h)*60);
+  const fbar=document.getElementById('fp-bar');if(fbar)fbar.style.width=pct+'%';
+  const fpct=document.getElementById('fp-pct');if(fpct)fpct.textContent=pct+'%';
+  const felapsed=document.getElementById('fp-elapsed');if(felapsed)felapsed.textContent=h+'h '+m+'m';
+  const ftime=document.getElementById('fp-time');if(ftime)ftime.textContent=h+':'+(m<10?'0':'')+m;
+  const fstatus=document.getElementById('fp-status');if(fstatus)fstatus.textContent=pct>=100?'Fast complete! ✓':'Fasting in progress';
+  updateRings();
+}
+
+// ── TODAY / HABITS ──
+function subTab(name){
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.stab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('stab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+function renderToday(){
+  renderHabitList('morning-list',MORNING_HABITS,'morn','m');
+  renderHabitList('habit-list',DAILY_HABITS,'habits','h');
+  renderMealLogList();
+  updateMacroBar();
+}
+function renderHabitList(elId,items,stateKey,prefix){
+  document.getElementById(elId).innerHTML=items.map(h=>`
+    <div class="habit-row">
+      <div class="hchk ${S[stateKey][h.id]?'done':''}" onclick="toggleHabit('${stateKey}','${h.id}','${prefix}',this)">
+        <svg viewBox="0 0 14 14"><polyline points="2,7 6,11 12,3"/></svg>
+      </div>
+      <div class="hlbl ${S[stateKey][h.id]?'done':''}" id="${prefix}lbl-${h.id}">
+        <div class="hname">${h.name}</div><div class="hcat">${h.cat}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleHabit(sk,id,prefix,el){
+  S[sk][id]=!S[sk][id];
+  el.classList.toggle('done',S[sk][id]);
+  document.getElementById(prefix+'lbl-'+id)?.classList.toggle('done',S[sk][id]);
+  save();updateRings();
+}
+function renderMealLogList(){
+  const wk='w'+S.w;
+  document.getElementById('meal-list').innerHTML=PLAN_MEALS.map(m=>{
+    const key='today_'+m.id;
+    const logged=!!S.mlogged[key];
+    // find today's meal macro from plan
+    const todayIdx=new Date().getDay();
+    const planDay=W[S.w].days[Math.min(todayIdx===0?4:todayIdx-1,4)];
+    const planMeal=planDay?.meals.find(pm=>pm.type.toLowerCase().includes(m.id.replace('meal','').trim()+''));
+    const macro=planMeal?`${planMeal.p}P · ${planMeal.c}C · ${planMeal.f}F · ${planMeal.cal}kcal`:'';
+    return`<div class="meal-row">
+      <div class="mdot ${logged?'logged':''}" id="mdot-${m.id}"></div>
+      <div class="minfo">
+        <div class="mname2">${m.name}</div>
+        <div class="mtime2">${m.time}</div>
+        ${macro?`<div class="mmacrow">${macro}</div>`:''}
+      </div>
+      <button class="mlog-btn ${logged?'logged':''}" onclick="logTodayMeal('${m.id}',this)">${logged?'Done':'Log'}</button>
+    </div>`;
+  }).join('');
+}
+function logTodayMeal(id,btn){
+  S.mlogged['today_'+id]=!S.mlogged['today_'+id];
+  btn.textContent=S.mlogged['today_'+id]?'Done':'Log';
+  btn.classList.toggle('logged',S.mlogged['today_'+id]);
+  document.getElementById('mdot-'+id)?.classList.toggle('logged',S.mlogged['today_'+id]);
+  save();updateMacroBar();updateRings();
+}
+function getMacroTotals(){
+  const wk='w'+S.w;
+  let p=0,c=0,f=0,cal=0;
+  const todayIdx=new Date().getDay();
+  const di=Math.min(todayIdx===0?4:todayIdx-1,4);
+  const planDay=W[S.w].days[di];
+  if(!planDay)return{p,c,f,cal};
+  PLAN_MEALS.forEach(m=>{
+    if(S.mlogged['today_'+m.id]){
+      const mealNum=parseInt(m.id.replace('meal',''));
+      const pm=planDay.meals[mealNum-1];
+      if(pm){p+=pm.p;c+=pm.c;f+=pm.f;cal+=pm.cal;}
+    }
+  });
+  return{p,c,f,cal};
+}
+function updateMacroBar(){
+  const{p,c,f,cal}=getMacroTotals();
+  const pp=Math.min(100,Math.round(p/TARGETS.p*100));
+  const cp=Math.min(100,Math.round(c/TARGETS.c*100));
+  const fp=Math.min(100,Math.round(f/TARGETS.f*100));
+  const setBar=(id,v,vId,vStr)=>{const el=document.getElementById(id);if(el)el.style.width=v+'%';const vel=document.getElementById(vId);if(vel)vel.textContent=vStr;};
+  setBar('mb-p',pp,'mbv-p',p+' / 135g');
+  setBar('mb-c',cp,'mbv-c',c+' / 125g');
+  setBar('mb-f',fp,'mbv-f',f+' / 58g');
+  const mc=document.getElementById('mb-cals');if(mc)mc.textContent=cal+' / 1,520 kcal';
+}
+
+// ── PLAN SCREEN ──
+function changeWeek(d){S.w=(S.w+d+4)%4;save();document.getElementById('wlabel').textContent=W[S.w].label;renderPlan();}
+function renderPlan(){
+  const wk='w'+S.w;
+  document.getElementById('dtabs').innerHTML=W[S.w].days.map((d,i)=>{
+    const allDone=d.meals.every(m=>S.logged[wk+'_d'+i+'_'+m.type]);
+    return`<div class="dtab ${i===curDay?'active':''} ${allDone&&i!==curDay?'done':''}" onclick="selDay(${i})">${d.day}</div>`;
+  }).join('');
+  renderPlanDay();
+}
+function selDay(i){curDay=i;renderPlan();}
+function renderPlanDay(){
+  const day=W[S.w].days[curDay];const wk='w'+S.w;
+  document.getElementById('day-content').innerHTML=day.meals.map(m=>{
+    const key=wk+'_d'+curDay+'_'+m.type;const logged=!!S.logged[key];
+    return`<div class="meal-card">
+      <div class="mcard-top">
+        <div class="mcard-badge"><div class="mtype-sm">${m.type}</div><div class="mtime-sm">${m.time}</div></div>
+        <div class="mcal-badge"><div class="mcal-n" style="color:var(--text);">${m.cal}</div><div class="mcal-l">kcal</div></div>
+      </div>
+      <div class="meal-title">${m.name}</div>
+      <div class="meal-desc">${m.prep}</div>
+      <div class="mmacros">
+        <div class="mpill"><div class="mpn mpn-cal">${m.cal}</div><div class="mpl">kcal</div></div>
+        <div class="mpill"><div class="mpn mpn-p">${m.p}g</div><div class="mpl">protein</div></div>
+        <div class="mpill"><div class="mpn mpn-c">${m.c}g</div><div class="mpl">carbs</div></div>
+        <div class="mpill"><div class="mpn mpn-f">${m.f}g</div><div class="mpl">fat</div></div>
+      </div>
+      <div class="tags">${m.tags.map(([t,c])=>`<span class="tag ${c}">${t}</span>`).join('')}</div>
+      <div class="ing-section">
+        <div class="ing-head"><div class="ing-title">Food scale amounts</div><div class="scale-badge">weigh raw</div></div>
+        <table class="ing-table">${m.ings.map(([n,a,p,c,f,cal])=>`<tr>
+          <td class="iname">${n}</td><td class="iamt">${a}</td><td class="imacros">${p}P·${c}C·${f}F</td>
+        </tr>`).join('')}</table>
+      </div>
+      <button class="log-btn ${logged?'logged':''}" onclick="logPlanMeal('${key}',this)">${logged?'Logged ✓':'Mark as eaten'}</button>
+    </div>`;
+  }).join('');
+}
+function logPlanMeal(key,btn){
+  S.logged[key]=!S.logged[key];
+  btn.textContent=S.logged[key]?'Logged ✓':'Mark as eaten';
+  btn.classList.toggle('logged',S.logged[key]);
+  save();renderPlan();
+}
+
+// ── PROGRESS ──
+function renderProgress(){
+  const wk='w'+S.w;let tm=0,fd=0;
+  document.getElementById('week-rows').innerHTML=W[S.w].days.map((d,i)=>{
+    const l=d.meals.filter(m=>S.logged[wk+'_d'+i+'_'+m.type]).length;
+    if(l===d.meals.length)fd++;tm+=l;
+    const pct=Math.round(l/d.meals.length*100);
+    return`<div class="wp-row"><div class="wp-lbl">${d.day}</div><div class="wp-track"><div class="wp-fill" style="width:${pct}%"></div></div><div class="wp-pct">${pct}%</div></div>`;
+  }).join('');
+  document.getElementById('p-meals').textContent=tm;
+  document.getElementById('p-streak').textContent=fd;
+  document.getElementById('p-fast').textContent=S.streaks.fast;
+  document.getElementById('p-water').textContent=S.water+'/8';
+  const{p,c,f}=getMacroTotals();
+  const pp=Math.min(100,Math.round(p/TARGETS.p*100));
+  const cp=Math.min(100,Math.round(c/TARGETS.c*100));
+  const fp=Math.min(100,Math.round(f/TARGETS.f*100));
+  document.getElementById('pm-p').style.width=pp+'%';document.getElementById('pm-pv').textContent=pp+'%';
+  document.getElementById('pm-c').style.width=cp+'%';document.getElementById('pm-cv').textContent=cp+'%';
+  document.getElementById('pm-f').style.width=fp+'%';document.getElementById('pm-fv').textContent=fp+'%';
+  // restore check-in UI
+  if(S.ci.energy>=0)document.querySelectorAll('#ci-energy .choice-btn')[S.ci.energy]?.classList.add('active');
+  if(S.ci.sleep>=0)document.querySelectorAll('#ci-sleep .choice-btn')[S.ci.sleep]?.classList.add('active');
+  S.ci.syms.forEach(sym=>{
+    document.querySelectorAll('#ci-syms .sym-btn').forEach(b=>{if(b.textContent===sym)b.classList.add('active');});
+  });
+  if(S.ci.note)document.getElementById('ci-note').value=S.ci.note;
+}
+function ci(key,val,el){
+  S.ci[key]=val;
+  const rowId='ci-'+key;
+  document.querySelectorAll('#'+rowId+' .choice-btn').forEach((b,i)=>b.classList.toggle('active',i===val));
+  save();
+}
+function toggleSym(el){
+  el.classList.toggle('active');
+  const t=el.textContent;
+  S.ci.syms=el.classList.contains('active')?[...new Set([...S.ci.syms,t])]:S.ci.syms.filter(s=>s!==t);
+  save();
+}
+function saveCi(){S.ci.note=document.getElementById('ci-note').value;S.streaks.days++;save();alert('Check-in saved!');}
+
+// ── GROCERY ──
+function renderGrocery(){
+  const g=GROCERY[S.w];
+  document.getElementById('g-wk').textContent=S.w+1;
+  const cats=[
+    ['proteins','Proteins','<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'],
+    ['produce','Produce + frozen veg','<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'],
+    ['pantry','Pantry + staples','<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>']
+  ];
+  document.getElementById('grocery-content').innerHTML=cats.map(([key,title,icon])=>`
+    <div class="gcol-card">
+      <div class="gcol-title">${icon}${title}</div>
+      ${g[key].map(([item,amt],i)=>{
+        const gk='w'+S.w+'_'+key+'_'+i;const done=!!S.grocery[gk];
+        return`<div class="gitem">
+          <div class="gck ${done?'done':''}" onclick="toggleG('${gk}',this)"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+          <div class="ginfo"><div class="gitm ${done?'done':''}" id="gt-${gk}">${item}</div><div class="gamt">${amt}</div></div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+function toggleG(key,el){
+  S.grocery[key]=!S.grocery[key];
+  el.classList.toggle('done',S.grocery[key]);
+  document.getElementById('gt-'+key)?.classList.toggle('done',S.grocery[key]);
+  save();
+}
+function clearGrocery(){
+  const pre='w'+S.w;Object.keys(S.grocery).filter(k=>k.startsWith(pre)).forEach(k=>{S.grocery[k]=false;});
+  save();renderGrocery();
+}
+
+// ── FITNESS DATA ──
+// 3 phases, each with 5 exercises using cable machine
+// Focus: glutes, low back, core — progressively harder phase to phase
+const PHASES=[
+{id:'A',label:'Phase A — Foundation',weeks:'Weeks 1–4',badge:'Beginner-friendly',
+ desc:'Build the movement patterns first. These exercises activate the glutes and stabilize the low back safely. Do 3 rounds of each, rest 60 sec between sets. All done on a cable machine.',
+ exercises:[
+  {id:'squat',name:'Cable Pull-Through',focus:'glutes',focusLabel:'Glutes + Low Back',
+   sets:3,reps:'12 reps',
+   setup:'Set cable to lowest position. Attach rope handle. Stand facing away from the machine, feet shoulder-width apart, rope between your legs. Hinge at hips, push them back, then drive forward squeezing glutes.',
+   desc:'This teaches the hip hinge — the foundation of every glute and low back exercise. Feels like a deadlift but with constant cable tension.',
+   note:'Keep back flat, soft knee bend. Focus on squeezing glutes at the top, not your lower back.'},
+  {id:'kickback',name:'Cable Kickback',focus:'glutes',focusLabel:'Glutes',
+   sets:3,reps:'15 reps each side',
+   setup:'Set cable at lowest position. Attach ankle strap. Face the machine, hold for balance. Kick straight leg back behind you, squeeze hard at the top.',
+   desc:'Directly targets the gluteus maximus. One of the best isolation exercises for fibroid-safe, low-impact glute work.',
+   note:'Don\'t arch your lower back to lift higher — keep the movement in the hip joint.'},
+  {id:'pallof',name:'Pallof Press',focus:'core',focusLabel:'Core — Anti-rotation',
+   sets:3,reps:'12 reps each side',
+   setup:'Set cable at chest height. Stand side-on to machine, feet shoulder-width apart. Hold handle at chest with both hands, then press straight out and hold 2 seconds, then return.',
+   desc:'The best anti-rotation core exercise. Trains your core to resist twisting forces — exactly what protects your low back during daily movement.',
+   note:'The further you stand from the machine, the harder it gets. Start close.'},
+  {id:'seated-row',name:'Seated Cable Row (low)',focus:'lowback',focusLabel:'Low Back + Core',
+   sets:3,reps:'12 reps',
+   setup:'Sit at low cable row station. Use V-bar or rope handle. Sit tall, slight lean forward, then pull handle to lower ribs squeezing shoulder blades together. Slow 3-second return.',
+   desc:'Strengthens the muscles along either side of your spine — the erector spinae. Critical for low back health and posture from WFH sitting.',
+   note:'Don\'t lean way back to lift more weight. Keep movement controlled, sit tall at start.'},
+  {id:'crunch-cable',name:'Cable Crunch (kneeling)',focus:'core',focusLabel:'Core — Abs',
+   sets:3,reps:'15 reps',
+   setup:'Attach rope to high cable. Kneel facing machine. Hold rope at sides of head. Crunch down contracting abs, elbows toward knees. Slow return.',
+   desc:'Loads the abs through their full range of motion — far more effective than floor crunches and easier on the hip flexors.',
+   note:'Pull with your abs, not your neck. Think about bringing your chest to your knees.'}
+ ]},
+{id:'B',label:'Phase B — Build',weeks:'Weeks 5–8',badge:'Intermediate',
+ desc:'Same movement patterns, heavier load, more time under tension. Add weight from Phase A. Add pauses at peak contraction for every exercise this phase.',
+ exercises:[
+  {id:'rdl',name:'Cable Romanian Deadlift',focus:'glutes',focusLabel:'Glutes + Low Back',
+   sets:4,reps:'10 reps',
+   setup:'Set cable at lowest position. Attach straight bar or rope. Stand close, hip-width feet. Push hips back as you lower bar down thighs, feel the hamstring stretch, then drive hips forward to stand. Squeeze glutes hard at top.',
+   desc:'The step up from pull-throughs. More hamstring and glute loading, directly strengthens the low back muscles through their full range.',
+   note:'Weight should travel close to your legs. Back stays flat — if it rounds, drop the weight.'},
+  {id:'hip-abduction',name:'Cable Hip Abduction (standing)',focus:'glutes',focusLabel:'Glutes — Side',
+   sets:3,reps:'15 reps each side',
+   setup:'Ankle strap at lowest cable. Stand side-on, hold machine for balance. Lift leg out to the side — lead with your heel, keep hips level. Pause 1 sec at top, slow return.',
+   desc:'Targets gluteus medius — the side glute responsible for hip stability and protecting the low back and SI joint (common fibroid pain area).',
+   note:'Don\'t let your hip hike up to reach higher. Smaller controlled movement is better.'},
+  {id:'chop',name:'Cable Wood Chop (high to low)',focus:'core',focusLabel:'Core — Obliques',
+   sets:3,reps:'12 reps each side',
+   setup:'Set cable at highest position. Stand side-on, grab handle with both hands. Pull diagonally down and across your body (high to low), rotating your torso. Slow controlled return.',
+   desc:'The most functional core exercise in this plan. Trains the obliques to control rotation — protects the low back during any twisting movement.',
+   note:'Let your back foot pivot naturally. The power comes from your core, not your arms.'},
+  {id:'face-pull',name:'Cable Face Pull',focus:'lowback',focusLabel:'Upper Back + Posture',
+   sets:3,reps:'15 reps',
+   setup:'Set cable at forehead height. Use rope attachment. Pull the rope toward your face, splitting the rope apart as you pull back. Elbows high and wide.',
+   desc:'Counteracts the forward rounding from WFH sitting. Strengthens the rear delts and rotator cuff — reduces upper back and neck tension that feeds into low back pain.',
+   note:'Squeeze the shoulder blades together and back. This should feel like you\'re opening a door with your elbows.'},
+  {id:'plank-cable',name:'Cable Plank Row (tall kneeling)',focus:'core',focusLabel:'Core — Full Stability',
+   sets:3,reps:'10 reps each side',
+   setup:'Set cable at lowest position. Kneel tall facing machine. Hold handle with one hand, keep hips square. Row the handle to your hip while keeping your body completely still. Switch sides.',
+   desc:'Trains core stability while moving — the most important functional core skill. Your abs, obliques, and low back all work together to keep you from rotating.',
+   note:'If your hips shift when you row, the weight is too heavy. Stay completely square.'}
+ ]},
+{id:'C',label:'Phase C — Strengthen',weeks:'Weeks 9–12',badge:'Advanced',
+ desc:'Higher loads, single-leg work, and full power patterns. This phase builds the strength base that will carry you forward. Rest 90 sec between sets.',
+ exercises:[
+  {id:'single-rdl',name:'Single-Leg Cable RDL',focus:'glutes',focusLabel:'Glutes + Balance',
+   sets:3,reps:'10 reps each side',
+   setup:'Cable at lowest position, straight bar. Stand on one leg. Same RDL movement — push hips back, lower toward floor, return. Floating leg stays behind you.',
+   desc:'The hardest glute exercise in this plan. Single-leg work exposes and fixes imbalances between sides, critical for low back health and fibroid-related pelvic pain.',
+   note:'Hold something lightly for balance at first. The goal is hip hinge, not balance challenge.'},
+  {id:'squat-cable2',name:'Cable Sumo Squat',focus:'glutes',focusLabel:'Glutes + Inner Thigh',
+   sets:4,reps:'12 reps',
+   setup:'Cable at lowest position, rope handle between legs. Wide stance, toes turned out 45°. Squat deep, drive through heels and inner thighs to stand. Squeeze glutes at top.',
+   desc:'Wide stance targets the inner glutes and adductors — the muscles around the pelvic floor. Especially beneficial for fibroid recovery and pelvic floor strengthening.',
+   note:'Keep your chest up and knees tracking over your toes throughout.'},
+  {id:'rotation',name:'Cable Rotational Press',focus:'core',focusLabel:'Core — Power',
+   sets:3,reps:'12 reps each side',
+   setup:'Cable at chest height. Stand side-on. Hold handle at chest with both hands, rotate and press away from machine. Pivot back foot, let hips lead the rotation, arms follow.',
+   desc:'Power-based core training. Trains the entire kinetic chain from glutes through core to shoulder — the most sport-like movement pattern in the plan.',
+   note:'Let your back heel lift — rotation comes from the hips first, then the core.'},
+  {id:'back-ext',name:'Cable Back Extension (standing)',focus:'lowback',focusLabel:'Low Back — Strength',
+   sets:3,reps:'12 reps',
+   setup:'Set cable at lowest position, rope attachment. Bend forward at hips (45°), rope between legs. Drive hips forward to stand upright, squeezing glutes hard at top. This is a standing good morning.',
+   desc:'Directly strengthens the erector spinae — your low back muscles. Combined with all the earlier hip hinge patterns, this is the capstone low back exercise.',
+   note:'Move from the hips, not the lower back. Lock your back and move like a hinge.'},
+  {id:'dead-bug',name:'Cable Dead Bug',focus:'core',focusLabel:'Core — Deep Stability',
+   sets:3,reps:'10 reps each side',
+   setup:'Set cable at lowest position. Lie on your back, feet toward machine. Hold handle overhead with both arms extended. Extend one leg out straight while keeping low back pressed to floor. Return. Switch legs.',
+   desc:'The deepest core stabilizer exercise. Trains the transverse abdominis — the internal corset that holds everything in. Essential for low back and pelvic floor health.',
+   note:'Do not let your lower back lift off the floor — that\'s the whole exercise. Go slow.'}
+ ]}
+];
+
+// Workout schedule: Tue=2, Thu=4, Sat=6
+const WORKOUT_DAYS=[2,4,6];
+const DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+let curPhase=0;
+let curWorkoutPhase=0;
+
+function selWorkout(i){
+  document.querySelectorAll('#fit-tabs .stab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
+  curWorkoutPhase=i;
+  renderFitnessContent();
+}
+
+function renderFitnessBanner(){
+  const d=new Date().getDay();
+  const isWorkout=WORKOUT_DAYS.includes(d);
+  const el=document.getElementById('fit-day-banner');
+  if(isWorkout){
+    const nextWorkout=getNextWorkoutLabel();
+    el.innerHTML=`<div class="fit-banner today">
+      <div class="fit-banner-icon">💪</div>
+      <div class="fit-banner-text">
+        <div class="fbt">Workout day — ${DAY_NAMES[d]}</div>
+        <div class="fbs">Choose a phase below and get after it</div>
+      </div>
+    </div>`;
+  } else {
+    const next=getNextWorkoutLabel();
+    el.innerHTML=`<div class="fit-banner rest">
+      <div class="fit-banner-icon">🌿</div>
+      <div class="fit-banner-text">
+        <div class="fbt">Rest day — ${DAY_NAMES[d]}</div>
+        <div class="fbs">Next workout: ${next} · Today: walk, stretch, hip mobility</div>
+      </div>
+    </div>`;
+  }
+}
+
+function getNextWorkoutLabel(){
+  const d=new Date().getDay();
+  const next=WORKOUT_DAYS.find(wd=>wd>d)||WORKOUT_DAYS[0];
+  return DAY_NAMES[next];
+}
+
+function renderFitnessContent(){
+  const el=document.getElementById('fit-content');
+  if(curWorkoutPhase===3){renderFitnessLog(el);return;}
+  const ph=PHASES[curWorkoutPhase];
+  const wk='fit_w'+curWorkoutPhase;
+  const today=new Date().toDateString();
+  const sessKey='fit_sess_'+today+'_'+curWorkoutPhase;
+  const exDone=S.fitSets||{};
+
+  const totalSets=ph.exercises.reduce((a,ex)=>a+ex.sets,0);
+  const doneSets=ph.exercises.reduce((a,ex)=>{
+    for(let s=0;s<ex.sets;s++){if(exDone[sessKey+'_'+ex.id+'_s'+s])a++;}
+    return a;
+  },0);
+  const pct=Math.round(doneSets/totalSets*100);
+
+  el.innerHTML=`
+    <div class="fit-phase-card">
+      <div class="fit-phase-head">
+        <div>
+          <div class="fit-phase-title">${ph.label}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${ph.weeks}</div>
+        </div>
+        <div class="fit-phase-badge">${ph.badge}</div>
+      </div>
+      <div class="fit-phase-desc">${ph.desc}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;background:var(--green);border-radius:3px;width:${pct}%;transition:width .4s;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--green);font-weight:500;">${doneSets}/${totalSets} sets</div>
+      </div>
+    </div>
+    ${ph.exercises.map(ex=>renderExercise(ex,sessKey,exDone)).join('')}
+    <button class="finish-workout-btn" onclick="finishWorkout(${curWorkoutPhase},'${sessKey}')">
+      ${S.fitDone&&S.fitDone[sessKey]?'✓ Workout logged!':'Log completed workout'}
+    </button>
+    <div style="height:16px;"></div>
+  `;
+}
+
+function renderExercise(ex,sessKey,exDone){
+  const focusCls={glutes:'glutes',core:'core',lowback:'lowback',compound:'compound'}[ex.focus]||'compound';
+  const sets=Array.from({length:ex.sets},(_,i)=>{
+    const key=sessKey+'_'+ex.id+'_s'+i;
+    const done=!!exDone[key];
+    return`<div class="set-box ${done?'done':''}" onclick="toggleSet('${key}',this)">
+      <div class="snum">Set ${i+1}</div>
+      <div class="sreps">${ex.reps}</div>
+    </div>`;
+  }).join('');
+  const allDone=Array.from({length:ex.sets},(_,i)=>!!exDone[sessKey+'_'+ex.id+'_s'+i]).every(Boolean);
+  return`<div class="exercise-card" id="excard-${ex.id}">
+    <div class="ex-top">
+      <div class="ex-name">${ex.name}</div>
+      <div class="ex-sets-badge">${ex.sets}×${ex.reps.split(' ')[0]}</div>
+    </div>
+    <div class="ex-focus ${focusCls}">${ex.focusLabel}</div>
+    <div class="ex-desc">${ex.desc}</div>
+    <div class="ex-setup">${ex.setup}</div>
+    <div class="ex-sets">${sets}</div>
+    <div class="ex-note">${ex.note}</div>
+  </div>`;
+}
+
+function toggleSet(key,el){
+  if(!S.fitSets)S.fitSets={};
+  S.fitSets[key]=!S.fitSets[key];
+  el.classList.toggle('done',S.fitSets[key]);
+  el.querySelector('.snum').style.color=S.fitSets[key]?'var(--green)':'';
+  save();
+  // update progress bar
+  const ph=PHASES[curWorkoutPhase];
+  const sessKey=key.substring(0,key.lastIndexOf('_s'));
+  const sessBase=sessKey.substring(0,sessKey.lastIndexOf('_'));
+  const totalSets=ph.exercises.reduce((a,ex)=>a+ex.sets,0);
+  const doneSets=ph.exercises.reduce((a,ex)=>{
+    for(let s=0;s<ex.sets;s++){if(S.fitSets[sessBase+'_'+ex.id+'_s'+s])a++;}
+    return a;
+  },0);
+  const pct=Math.round(doneSets/totalSets*100);
+  // re-render just progress bar area
+  renderFitnessContent();
+}
+
+function finishWorkout(phaseIdx,sessKey){
+  if(!S.fitDone)S.fitDone={};
+  if(!S.fitLog)S.fitLog=[];
+  if(!S.fitDone[sessKey]){
+    S.fitDone[sessKey]=true;
+    S.fitLog.unshift({date:new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}),phase:PHASES[phaseIdx].id,label:PHASES[phaseIdx].label,day:DAY_NAMES[new Date().getDay()]});
+    if(S.fitLog.length>20)S.fitLog=S.fitLog.slice(0,20);
+    if(!S.streaks)S.streaks={days:0,fast:0};
+  }
+  save();renderFitnessContent();
+}
+
+function renderFitnessLog(el){
+  if(!S.fitLog||S.fitLog.length===0){
+    el.innerHTML=`
+      <div class="streak-row">
+        <div class="fit-stat"><div class="fsn">0</div><div class="fsl">Workouts done</div></div>
+        <div class="fit-stat"><div class="fsn">0</div><div class="fsl">This month</div></div>
+        <div class="fit-stat"><div class="fsn">Tue/Thu/Sat</div><div class="fsl">Schedule</div></div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-emoji">📋</div>
+        <div class="rest-title">No workouts logged yet</div>
+        <div class="rest-text">Complete your first workout in Phase A, B, or C and it'll show up here. Your workout history tracks progress over time.</div>
+      </div>
+      ${renderWhyItWorks()}`;
+    return;
+  }
+  const thisMonth=new Date().getMonth();
+  const thisMonthCount=(S.fitLog||[]).filter(l=>{
+    const d=new Date(l.date);return d.getMonth()===thisMonth;
+  }).length;
+  const total=(S.fitLog||[]).length;
+  el.innerHTML=`
+    <div class="streak-row">
+      <div class="fit-stat"><div class="fsn">${total}</div><div class="fsl">Total done</div></div>
+      <div class="fit-stat"><div class="fsn">${thisMonthCount}</div><div class="fsl">This month</div></div>
+      <div class="fit-stat"><div class="fsn" style="font-size:14px;">Tue·Thu·Sat</div><div class="fsl">Schedule</div></div>
+    </div>
+    <div class="workout-log-card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">Workout history</div>
+      ${(S.fitLog||[]).map(l=>`
+        <div class="log-entry">
+          <div>
+            <div class="log-date">${l.date}</div>
+            <div class="log-detail">${l.day} · ${l.label}</div>
+          </div>
+          <div class="log-badge">Phase ${l.phase}</div>
+        </div>`).join('')}
+    </div>
+    ${renderWhyItWorks()}`;
+}
+
+function renderWhyItWorks(){
+  return`
+    <div style="font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;">Why this program</div>
+    <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Glutes + fibroids</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Strong glutes take load off the pelvis and reduce pelvic congestion — a direct driver of fibroid pain and heavy periods. Hip hinge patterns are the most efficient path there.</div></div>
+    <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Low back + WFH</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Sitting 8+ hrs shortens hip flexors, weakens glutes, and overloads the low back. The cable RDL and pull-through patterns directly reverse this pattern.</div></div>
+    <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Core + cortisol</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Strength training 3×/week reduces cortisol over time and improves insulin sensitivity — both directly support fat loss and fibroid symptom management.</div></div>
+    <div class="card2"><div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--green);">Cable vs free weights</div><div style="font-size:12px;color:var(--text2);line-height:1.6;">Cables provide constant tension through the full range of motion — more glute and core activation than dumbbells or barbells for the same exercises. Perfect for your goals.</div></div>`;
+}
+
+function renderFitness(){
+  renderFitnessBanner();
+  renderFitnessContent();
+}
+
+// ── INIT ──
+initHeader();
+renderQuote();
+renderWater();
+renderToday();
+updateRings();
+if(S.fastActive&&S.fastStart)startFastTick();
+else updateFastUI();
+</script>
+</body>
+</html>
